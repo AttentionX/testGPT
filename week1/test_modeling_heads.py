@@ -1,5 +1,5 @@
 import torch
-from modeling_heads import HeadV1, HeadV2, HeadV3, HeadV4   # noqa
+from modeling_heads import HeadVer1, HeadVer2, HeadVer3, HeadVer4
 
 
 # --- testing v1 --- #
@@ -11,7 +11,7 @@ def test_head_v1():
     answer = torch.Tensor([[[1,   2,   3  ],
                             [2.5, 3.5, 4.5],
                             [4,   5,   6  ]]])
-    head = HeadV1()
+    head = HeadVer1()
     assert torch.allclose(head(x), answer)
 
 
@@ -23,7 +23,7 @@ def test_head_v2():
     answer = torch.Tensor([[[1,   2,   3  ],
                             [2.5, 3.5, 4.5],
                             [4,   5,   6  ]]])
-    head = HeadV2()
+    head = HeadVer2()
     assert torch.allclose(head(x), answer)
 
 
@@ -35,7 +35,7 @@ def test_head_v3():
     answer = torch.Tensor([[[1,   2,   3  ],
                             [2.5, 3.5, 4.5],
                             [4,   5,   6  ]]])
-    head = HeadV3()
+    head = HeadVer3()
     assert torch.allclose(head(x), answer)
 
 
@@ -51,7 +51,7 @@ def test_head_v4_attention_has_no_notion_of_space():
                         [1, 2, 3],
                         [7, 8, 9]]])
     _, T, C = x1.shape
-    head = HeadV4(T, C)
+    head = HeadVer4(T, C)
     y1 = head(x1)  # (B, T, C)
     y2 = head(x2)  # (B, T, C)
     assert torch.allclose(y1[:, -1, :], y2[:, -1, :])
@@ -62,7 +62,7 @@ def test_head_v4_logits_are_properly_masked():
                        [4, 5, 6],
                        [7, 8, 9]]])
     T, C = x.shape[1:]
-    head = HeadV4(T, C)
+    head = HeadVer4(T, C)
     head(x)
     expected = torch.IntTensor([[[0,  1,  1],
                                  [0,  0,  1],
@@ -75,7 +75,7 @@ def test_head_v4_logits_are_properly_masked():
 def test_head_v4_logits_are_properly_normalized():
     B, T, C = 4, 10, 8
     x = torch.rand(B, T, C)
-    head = HeadV4(T, C)
+    head = HeadVer4(T, C)
     head(x)
     expected = torch.ones(B, T)
     was = head.wei.sum(dim=-1)
@@ -85,7 +85,7 @@ def test_head_v4_logits_are_properly_normalized():
 def test_head_v4_why_divide_by_sqrt_of_n_embd():
     B, T, C = 4, 128, 1024
     x = torch.randn(B, T, C)
-    head = HeadV4(T, C)
+    head = HeadVer4(T, C)
     head(x, debug=True)  # (B, T, C)
     assert 1 == torch.round(head.var)
 

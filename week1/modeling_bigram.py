@@ -24,7 +24,7 @@ class BigramLanguageModelVer1(nn.Module):
         return logits, loss
 
     def logits(self, idx: torch.Tensor) -> torch.Tensor:
-        return self.token_embedding_table(idx)
+        return self.token_embedding_table(idx)  # (B, T) ->  (B, T, C)
 
     def generate(self, idx: torch.Tensor, max_new_tokens: int):
         # idx is (B, T) array of indices in the current context
@@ -34,10 +34,8 @@ class BigramLanguageModelVer1(nn.Module):
             last_idx = idx[:, -T:]   # (B, T + new) -> (B, T)
             logits, loss = self(last_idx)  # embedding vector, loss=None
             # focus only on the last time step -> predict what comes next
-            # becomes (B, C) # 각 batch 별로 마지막 input index의 logits으로부터 다음 character get
-            # Bigram LM이기 때문에 마지막 글자만 sampling 영향
             logits = logits[:, -1, :]
-            # apply softmax to get probabilities -> 정규화 반드시 해야하는 것은 아니지만, non negative & non-zero sum이어야 되서 함
+            # apply softmax to get probabilities
             probs = F.softmax(logits, dim=-1)  # (B, C) # softmax
             # sample from the distribution
             idx_next = torch.multinomial(probs, num_samples=1)  # (B, 1) -> next idx sampling
@@ -58,12 +56,14 @@ class BigramLanguageModelVer2(BigramLanguageModelVer1):
     def logits(self, idx: torch.Tensor) -> torch.Tensor:
         B, T = idx.shape
         C = self.token_embedding_table.weight.shape[1]
+        # --- TODO --- #
         # idx and targets are both (B,T) tensor of integers
-        tok_emb = self.token_embedding_table(idx)  # (B,T,C)
+        tok_emb = self.token_embedding_table(idx)  # (B, T) -> (B,T,C)
         pos_emb = self.pos_encodings(T, C).to(idx.device)  # (T,C)
         x = tok_emb + pos_emb  # (B,T,C)
         x = self.head(x)  # apply one head  of self-attention. (B,T,C)
         logits = self.lm_head(x)  # (B,T,vocab_size)
+        # ------------ #
         return logits
 
     @staticmethod
@@ -71,9 +71,11 @@ class BigramLanguageModelVer2(BigramLanguageModelVer1):
         """
         :return: (L, H)
         """
+        # --- TODO --- #
         positions = torch.arange(block_size).view(-1, 1)  # -> (L)
         freqs = 0.0001 ** (torch.arange(n_embd)[::2] / n_embd).view(1, -1)  # (,) -> (H)
         encodings = torch.zeros(size=(block_size, n_embd))  # (L, H)
         encodings[:, ::2] = torch.sin(freqs * positions)  # evens = sin
         encodings[:, 1::2] = torch.cos(freqs * positions)
         return encodings
+        # ------------ #
