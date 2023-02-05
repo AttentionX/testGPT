@@ -1,12 +1,12 @@
-[submodule "week1/learnGPT-team1"]
-	path = week1/learnGPT-team1
+[submodule "learnGPT-team1"]
+	path = learnGPT-team1
 	url = https://github.com/AttentionX/learnGPT-team1.git
-[submodule "week1/learnGPT-team2"]
-	path = week1/learnGPT-team2
+[submodule "learnGPT-team2"]
+	path = learnGPT-team2
 	url = https://github.com/AttentionX/learnGPT-team2.git
-[submodule "week1/learnGPT-team3"]
-	path = week1/learnGPT-team3
+[submodule "learnGPT-team3"]
+	path = learnGPT-team3
 	url = https://github.com/AttentionX/learnGPT-team3.git
-[submodule "week1/learnGPT-team4"]
-	path = week1/learnGPT-team4
+[submodule "learnGPT-team4"]
+	path = learnGPT-team4
 	url = https://github.com/AttentionX/learnGPT-team4.git
