@@ -1,21 +1,29 @@
-import argparse
+import json
+import os
+from datetime import datetime
+from pathlib import Path
 import torch
+import argparse
 from modeling_heads import HeadVer1, HeadVer2, HeadVer3, HeadVer4
 from modeling_bigram import BigramLanguageModelVer1, BigramLanguageModelVer2
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--bigram_ver", type=int, default=2,  choices=[1, 2])
-parser.add_argument("--head_ver", type=int, default=2,  choices=[1, 2, 3, 4])
+parser.add_argument("--head_ver", type=int, default=4,  choices=[1, 2, 3, 4])
 parser.add_argument("--batch_size", type=int, default=32)
 parser.add_argument("--block_size", type=int, default=8)
-parser.add_argument("--max_iters", type=int, default=5000)
+parser.add_argument("--max_iters", type=int, default=10000)
 parser.add_argument("--eval_iters", type=int, default=200)
 parser.add_argument("--eval_interval", type=int, default=500)
 parser.add_argument("--learning_rate", type=float, default=1e-3)
 parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
 parser.add_argument("--n_embd", type=int, default=32)
 parser.add_argument("--seed", type=int, default=1337)
+parser.add_argument("--max_new_tokens", type=int, default=500)
 args = parser.parse_args()
 torch.manual_seed(args.seed)
+os.environ['TOKENIZERS_PARALLELISM'] = "true"
 
 
 # data loading
@@ -52,7 +60,7 @@ def main():
     elif args.head_ver == 3:
         head = HeadVer3()
     elif args.head_ver == 4:
-        head = HeadVer4(args.n_embd, args.block_size)
+        head = HeadVer4(args.block_size, args.n_embd)
     else:
         raise ValueError("Invalid head version:" + args.head_ver)
 
@@ -67,11 +75,11 @@ def main():
     if args.bigram_ver == 1:
         model = BigramLanguageModelVer1(vocab_size)
     elif args.bigram_ver == 2:
-        model = BigramLanguageModelVer2(vocab_size, head, args.n_embd, args.block_size)
+        model = BigramLanguageModelVer2(vocab_size, head, args.n_embd)
     else:
         raise ValueError("Invalid bigram version:" + args.bigram_ver)
 
-    # create a mapping from characters to integers
+        # create a mapping from characters to integers
     char2idx = {ch: i for i, ch in enumerate(chars)}
     idx2char = {i: ch for i, ch in enumerate(chars)}
     encode = lambda s: [char2idx[c] for c in s]  # encoder: take a string, output a list of integers
@@ -82,19 +90,14 @@ def main():
     n = int(0.9 * len(data))  # first 90% will be train, rest val
     train_data = data[:n]
     val_data = data[n:]
-
     m = model.to(args.device)
-
     # create a PyTorch optimizer
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
-
     for i in range(args.max_iters):
-
         # every once in a while evaluate the loss on train and val sets
         if i % args.eval_interval == 0:
             losses = estimate_loss(model, train_data, val_data)
             print(f"step {i}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
-
         # sample a batch of data
         xb, yb = get_batch('train', train_data, val_data)
         # evaluate the loss
@@ -104,7 +107,14 @@ def main():
         optimizer.step()
     # generate from the model
     context = torch.zeros((1, 1), dtype=torch.long, device=args.device)
-    print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
+    completion = decode(m.generate(context, max_new_tokens=args.max_new_tokens)[0].tolist())
+    # --- persist to local --- #
+    log_path = Path(__file__).resolve().parent / "logs" / str(datetime.now())
+    log_path.mkdir(exist_ok=True)
+    with open(log_path / "completion.txt", 'w') as fh:
+        fh.write(completion)
+    with open(log_path / "args.json", 'w') as fh:
+        fh.write(json.dumps(vars(args)))
 
 
 if __name__ == '__main__':

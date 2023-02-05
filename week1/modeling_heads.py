@@ -1,3 +1,4 @@
+import copy
 import torch
 from torch.nn import functional as F
 
@@ -34,7 +35,6 @@ class HeadVer2(torch.nn.Module):
 
 class HeadVer3(torch.nn.Module):
 
-
     def __call__(self, x: torch.Tensor) -> torch.Tensor:
         T = x.shape[1]
         tril = torch.tril(torch.ones(T, T))
@@ -47,21 +47,29 @@ class HeadVer3(torch.nn.Module):
 
 class HeadVer4(torch.nn.Module):
     """ i.e. one head of self-attention """
-    def __init__(self, n_embd: int, block_size: int):
+    def __init__(self, block_size: int, n_embd: int):
         super().__init__()
         self.key = torch.nn.Linear(n_embd, n_embd, bias=False)  # (C, C)
         self.query = torch.nn.Linear(n_embd, n_embd, bias=False)  # (C, C)
         self.value = torch.nn.Linear(n_embd, n_embd, bias=False)  # (C, C)
         self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
+        self.var = None
+        self.wei = None
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, debug: bool = False) -> torch.Tensor:
         B, T, C = x.shape
-        k = self.key(x)  # (B,T,C)
-        q = self.query(x)  # (B,T,C)
+        if debug:
+            k = torch.randn(B, T, C)  # (B, T, C)
+            q = torch.randn(B, T, C)  # (B, T, C)
+        else:
+            k = self.key(x)  # (B, T, C)
+            q = self.query(x)  # (B, T, C)
         # compute attention scores ("affinities")
-        wei = q @ k.transpose(-2, -1) * k.shape[-1]**-0.5  # (B, T, C) @ (B, C, T) -> (B, T, T)
+        wei = q @ k.transpose(-2, -1) * C ** -0.5
+        self.var = wei.var().detach()
         wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf'))  # (B, T, T)
         wei = F.softmax(wei, dim=-1)  # (B, T, T)
+        self.wei = copy.deepcopy(wei.detach())
         # perform the weighted aggregation of the values
         v = self.value(x)  # (B,T,C)
         out = wei @ v  # (B, T, T) @ (B, T, C) -> (B, T, C)
