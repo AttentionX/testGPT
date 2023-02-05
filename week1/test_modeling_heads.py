@@ -4,7 +4,6 @@ from modeling_heads import HeadVer1, HeadVer2, HeadVer3, HeadVer4
 
 # --- testing v1 --- #
 def test_head_v1():
-
     x = torch.Tensor([[[1, 2, 3],
                        [4, 5, 6],
                        [7, 8, 9]]])
