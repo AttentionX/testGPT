@@ -1,4 +1,5 @@
-import re, collections
+import re
+import collections
 from pprint import pprint
 import matplotlib.pyplot as plt
 

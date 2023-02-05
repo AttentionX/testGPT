@@ -1,5 +1,5 @@
 from typing import Union
-from modeling_heads import HeadVer1, HeadVer2, HeadVer3, HeadVer4
+from modeling_heads_answers import HeadVer1, HeadVer2, HeadVer3, HeadVer4
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
@@ -57,7 +57,12 @@ class BigramLanguageModelVer2(BigramLanguageModelVer1):
         B, T = idx.shape
         C = self.token_embedding_table.weight.shape[1]
         # --- TODO --- #
-        logits = ...
+        # idx and targets are both (B,T) tensor of integers
+        tok_emb = self.token_embedding_table(idx)  # (B, T) -> (B,T,C)
+        pos_emb = self.pos_encodings(T, C).to(idx.device)  # (T,C)
+        x = tok_emb + pos_emb  # (B,T,C)
+        x = self.head(x)  # apply one head  of self-attention. (B,T,C)
+        logits = self.lm_head(x)  # (B,T,vocab_size)
         # ------------ #
         return logits
 
@@ -67,6 +72,10 @@ class BigramLanguageModelVer2(BigramLanguageModelVer1):
         :return: (L, H)
         """
         # --- TODO --- #
-        encodings = ...
+        positions = torch.arange(block_size).view(-1, 1)  # -> (L)
+        freqs = 0.0001 ** (torch.arange(n_embd)[::2] / n_embd).view(1, -1)  # (,) -> (H)
+        encodings = torch.zeros(size=(block_size, n_embd))  # (L, H)
+        encodings[:, ::2] = torch.sin(freqs * positions)  # evens = sin
+        encodings[:, 1::2] = torch.cos(freqs * positions)
         return encodings
         # ------------ #

@@ -1,7 +1,7 @@
 import torch
 from modeling_bigram import BigramLanguageModelVer2
+from modeling_heads import HeadVer4
 import numpy as np
-from week1.modeling_heads import HeadVer4
 
 
 # --- testing v2 --- #
