@@ -10,11 +10,8 @@ python --version
 Python 3.9.12
 ```
 ### Libraries used
-```
-torch==1.13.1
-pytest==7.2.1
-numpy==1.24.1
-pyyaml==6.0
+```bash
+pip3 install torch==1.13.1 pytest==7.2.1 numpy==1.24.1 pyyaml==6.0
 ```
 
 ## Quick Start
