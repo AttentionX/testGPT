@@ -28,7 +28,7 @@ pytest tests/test_1.py -s -vv
 ```
 
 
-## TODO 2 - taking past into account  (`HeadVer1` & `GPTVer2`)
+## TODO 2 - taking the past into account  (`HeadVer1` & `GPTVer2`)
 
 ```bash
 pytest tests/test_2.py -s -vv
@@ -41,7 +41,7 @@ pytest tests/test_2.py -s -vv
 pytest tests/test_3.py -s -vv
 ```
 
-## TODO 4 - masking & normalization (`HeadVer3`)
+## TODO 4 - taking the past into account with masking & normalization (`HeadVer3`)
 
 ```bash
 pytest tests/test_4.py -s -vv
