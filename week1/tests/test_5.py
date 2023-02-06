@@ -1,5 +1,6 @@
 import torch
-from week1.src.modeling_head_v4 import HeadVer4
+from ..src import HeadVer4, GPTVer2
+from .test_utils import config, train, generate
 
 
 # --- testing v4 --- #
@@ -52,3 +53,12 @@ def test_head_v4_why_divide_by_sqrt_of_n_embd():
     head(x, test=True)  # (B, T, C)
     assert 1 == torch.round(head.var)
 
+
+def test_head_v4_generates_text_given_a_context():
+    torch.manual_seed(1337)
+    head = HeadVer4(config['block_size'], config['embed_size'])
+    lm = GPTVer2(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    train(lm)  # may take a while
+    expected = "The quick brown fox jumps over the lazyor th manot utou s l spaif ant"
+    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    assert expected == was

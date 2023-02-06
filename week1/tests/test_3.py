@@ -1,7 +1,6 @@
-import torch
 import timeit
-from week1.src.modeling_head_v1 import HeadVer1
-from week1.src.modeling_head_v2 import HeadVer2
+import torch
+from ..src import HeadVer1, HeadVer2
 
 
 # --- testing v2 --- #
@@ -23,4 +22,3 @@ def test_head_v2_faster_than_head_v1():
     time_taken_v1 = timeit.timeit(lambda: head_v1(x), number=10)
     time_taken_v2 = timeit.timeit(lambda: head_v2(x), number=10)
     assert time_taken_v2 < time_taken_v1
-

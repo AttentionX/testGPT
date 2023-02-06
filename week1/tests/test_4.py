@@ -1,10 +1,8 @@
 import torch
 import timeit
-from week1.src.modeling_head_v1 import HeadVer1
-from week1.src.modeling_head_v3 import HeadVer3
+from ..src import HeadVer1, HeadVer3
 
 
-# --- testing v3 --- #
 def test_head_v3_logically_the_same_as_head_v1():
     x = torch.Tensor([[[1, 2, 3],
                        [4, 5, 6],
@@ -47,4 +45,3 @@ def test_head_v3_logits_are_properly_masked():
     expected = torch.ones(B, T)
     was = head.wei.sum(dim=-1)
     assert torch.allclose(expected, was)
-

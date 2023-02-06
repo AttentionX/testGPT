@@ -1,22 +1,12 @@
-from typing import Union
-from . import BigramLMVer1, HeadVer1, HeadVer2, HeadVer3, HeadVer4
 import torch
-import torch.nn as nn
+from . import GPTVer2
 
 
-class BigramLMVer2(BigramLMVer1):
-
-    def __init__(self, head: Union[HeadVer1, HeadVer2, HeadVer3, HeadVer4], vocab_size: int, embed_size: int):
-        super().__init__(vocab_size)
-        # each token directly reads off the logits for the next token from a lookup table
-        self.head = head
-        self.token_embedding_table = nn.Embedding(vocab_size, embed_size)  # (|V|, C)
-        self.lm_head = nn.Linear(embed_size, vocab_size)  # (C, |V|)
+class GPTVer3(GPTVer2):
 
     def logits(self, idx: torch.Tensor) -> torch.Tensor:
         """
         :param idx: (B, T) tensor of integers
-        :param pos: if True, use positional encoding
         :return: logits (B, T, |V|)
         """
         B, T = idx.shape
@@ -24,9 +14,9 @@ class BigramLMVer2(BigramLMVer1):
         # --- TODO --- #
         # idx and targets are both (B,T) tensor of integers
         tok_emb = self.token_embedding_table(idx)  # (B, T) ->  (B, T, C)
-        x = tok_emb + self.pos_encodings(T, C).to(tok_emb.device)
-        x = self.head(x)  # apply one head  of self-attention. (B, T, C)
-        logits = self.lm_head(x)  # (B, T, |V|)
+        x = tok_emb + self.pos_encodings(T, C).to(tok_emb.device)  # (B, T, C). broadcast add (T, C) across B.
+        x = self.head(x)  # (B, T, C) ->  (B, T, C)
+        logits = self.lm_head(x)  # (B, T, C) @ (B, T, |V|) -> (B, T, |V|)
         # ------------ #
         return logits
 
