@@ -1,41 +1,5 @@
 import torch
-from modeling_heads import HeadVer1, HeadVer2, HeadVer3, HeadVer4
-
-
-# --- testing v1 --- #
-def test_head_v1():
-    x = torch.Tensor([[[1, 2, 3],
-                       [4, 5, 6],
-                       [7, 8, 9]]])
-    answer = torch.Tensor([[[1,   2,   3  ],
-                            [2.5, 3.5, 4.5],
-                            [4,   5,   6  ]]])
-    head = HeadVer1()
-    assert torch.allclose(head(x), answer)
-
-
-# --- testing v2 --- #
-def test_head_v2():
-    x = torch.Tensor([[[1, 2, 3],
-                       [4, 5, 6],
-                       [7, 8, 9]]])
-    answer = torch.Tensor([[[1,   2,   3  ],
-                            [2.5, 3.5, 4.5],
-                            [4,   5,   6  ]]])
-    head = HeadVer2()
-    assert torch.allclose(head(x), answer)
-
-
-# --- testing v3 --- #
-def test_head_v3():
-    x = torch.Tensor([[[1, 2, 3],
-                       [4, 5, 6],
-                       [7, 8, 9]]])
-    answer = torch.Tensor([[[1,   2,   3  ],
-                            [2.5, 3.5, 4.5],
-                            [4,   5,   6  ]]])
-    head = HeadVer3()
-    assert torch.allclose(head(x), answer)
+from modeling_head_v4 import HeadVer4
 
 
 # --- testing v4 --- #
@@ -85,6 +49,6 @@ def test_head_v4_why_divide_by_sqrt_of_n_embd():
     B, T, C = 4, 128, 1024
     x = torch.randn(B, T, C)
     head = HeadVer4(T, C)
-    head(x, debug=True)  # (B, T, C)
+    head(x, test=True)  # (B, T, C)
     assert 1 == torch.round(head.var)
 

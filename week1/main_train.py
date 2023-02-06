@@ -4,13 +4,17 @@ from datetime import datetime
 from pathlib import Path
 import torch
 import argparse
-from modeling_heads import HeadVer1, HeadVer2, HeadVer3, HeadVer4
-from modeling_bigram import BigramLanguageModelVer1, BigramLanguageModelVer2
+from modeling_head_v1 import HeadVer1
+from modeling_head_v2 import HeadVer2
+from modeling_head_v3 import HeadVer3
+from modeling_head_v4 import HeadVer4
+from modeling_bigram_lm_v1 import BigramLMVer1
+from modeling_bigram_lm_v2 import BigramLMVer2
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--bigram_ver", type=int, default=2,  choices=[1, 2])
-parser.add_argument("--head_ver", type=int, default=4,  choices=[1, 2, 3, 4])
+parser.add_argument("--bigram_ver", type=int, required=True,  choices=[1, 2])
+parser.add_argument("--head_ver", type=int, required=True,  choices=[1, 2, 3, 4])
 parser.add_argument("--batch_size", type=int, default=32)
 parser.add_argument("--block_size", type=int, default=8)
 parser.add_argument("--max_iters", type=int, default=10000)
@@ -18,7 +22,7 @@ parser.add_argument("--eval_iters", type=int, default=200)
 parser.add_argument("--eval_interval", type=int, default=500)
 parser.add_argument("--learning_rate", type=float, default=1e-3)
 parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu")
-parser.add_argument("--n_embd", type=int, default=32)
+parser.add_argument("--embed_size", type=int, default=32)
 parser.add_argument("--seed", type=int, default=1337)
 parser.add_argument("--max_new_tokens", type=int, default=500)
 args = parser.parse_args()
@@ -60,7 +64,7 @@ def main():
     elif args.head_ver == 3:
         head = HeadVer3()
     elif args.head_ver == 4:
-        head = HeadVer4(args.block_size, args.n_embd)
+        head = HeadVer4(args.block_size, args.embed_size)
     else:
         raise ValueError("Invalid head version:" + args.head_ver)
 
@@ -73,9 +77,9 @@ def main():
     vocab_size = len(chars)
 
     if args.bigram_ver == 1:
-        model = BigramLanguageModelVer1(vocab_size)
+        model = BigramLMVer1(vocab_size)
     elif args.bigram_ver == 2:
-        model = BigramLanguageModelVer2(vocab_size, head, args.n_embd)
+        model = BigramLMVer2(head, vocab_size, args.embed_size)
     else:
         raise ValueError("Invalid bigram version:" + args.bigram_ver)
 
