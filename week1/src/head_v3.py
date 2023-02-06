@@ -13,12 +13,10 @@ class HeadVer3:
         :return: out (B, T, C)
         """
         # --- TODO 4 --- #
-        T = x.shape[1]
-        tril = torch.tril(torch.ones(T, T))
-        wei = torch.zeros((T, T))
-        wei = wei.masked_fill(tril == 0, float('-inf'))
-        wei = F.softmax(wei, dim=-1)
-        out = wei @ x
-        # ------------ #
+
+        wei = ...
         self.wei = wei.detach()
+        out = ...
+        raise NotImplementedError
+        # -------------- #
         return out

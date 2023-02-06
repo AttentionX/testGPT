@@ -20,9 +20,7 @@ class GPTVer2(GPTVer1):
         :return: logits (B, T, |V|)
         """
         # --- TODO 2 --- #
-        # idx and targets are both (B,T) tensor of integers
-        tok_emb = self.token_embedding_table(idx)  # (B, T) ->  (B, T, C)
-        x = self.head(tok_emb)  # (B, T, C) ->  (B, T, C)
-        logits = self.lm_head(x)  # (B, T, C) @ (B, T, |V|) -> (B, T, |V|)
-        # ------------- #
+        logits = ...
+        raise NotImplementedError
+        # -------------- #
         return logits

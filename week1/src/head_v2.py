@@ -8,10 +8,8 @@ class HeadVer2:
         :return: out (B, T, C)
         """
         # --- TODO 3 --- #
-        T = x.shape[1]
-        wei = torch.tril(torch.ones(T, T)).to(x.device)
-        wei = wei / wei.sum(1, keepdim=True)
-        # perform the weighted aggregation of the values
-        out = wei @ x  # (B, T, T) @ (B, T, C) -> (B, T, C)
+        # vectorize HeadVer1.__call__()
+        out = ...
+        raise NotImplementedError
         # ------------ #
         return out
