@@ -3,7 +3,8 @@ check if ver_1, ver_2, ver_3 preserves order.
 """
 import numpy as np
 import torch
-from ..src import HeadVer1, GPTVer1, GPTVer2, GPTVer3
+from .test_utils import config, train, generate
+from ..src import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
 
 
 def test_gpt_v1_logits_order_is_not_preserved():
@@ -58,4 +59,23 @@ def test_gpt_v3_logits_order_is_preserved():
     assert not torch.allclose(logits[:, 2, :], logits[:, 3, :])
 
 
+# --- compare gpt_v2 and gpt_v3 --- #
+def test_gpt_v2_and_head_v4_generates_text_given_a_context():
+    torch.manual_seed(1337)
+    head = HeadVer4(config['block_size'], config['embed_size'])
+    lm = GPTVer2(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    train(lm)  # may take a while
+    expected = "The quick brown fox jumps over the lazyor th manot utou s l spaif ant"
+    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    assert expected == was
+
+
+def test_gpt_v3_and_head_v4_generates_text_given_a_context():
+    torch.manual_seed(1337)
+    head = HeadVer4(config['block_size'], config['embed_size'])
+    lm = GPTVer3(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    train(lm)  # may take a while
+    expected = "The quick brown fox jumps over the lazy stt, manot utou st the if ant"
+    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    assert expected == was
 

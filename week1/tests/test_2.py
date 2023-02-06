@@ -15,7 +15,7 @@ def test_head_v1_takes_an_average_of_the_past_into_account():
     assert torch.allclose(expected, was)
 
 
-def test_head_v1_generates_text_given_a_context():
+def test_gpt_v2_and_head_v1_generates_text_given_a_context():
     torch.manual_seed(1337)
     head = HeadVer1()
     lm = GPTVer2(head, config['vocab_size'], config['embed_size'], config['block_size'])

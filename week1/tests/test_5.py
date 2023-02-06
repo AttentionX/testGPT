@@ -53,7 +53,7 @@ def test_head_v4_the_variance_of_wei_after_scale_is_1():
     assert 1 == torch.round(head.var)
 
 
-def test_head_v4_generates_text_given_a_context():
+def test_gpt_v2_and_head_v4_generates_text_given_a_context():
     torch.manual_seed(1337)
     head = HeadVer4(config['block_size'], config['embed_size'])
     lm = GPTVer2(head, config['vocab_size'], config['embed_size'], config['block_size'])
