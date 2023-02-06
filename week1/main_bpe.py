@@ -3,7 +3,6 @@ import collections
 from pprint import pprint
 import matplotlib.pyplot as plt
 
-# 몇회 merge를 수행핼지
 num_merges = 100
 
 dictionary = {
@@ -32,7 +31,6 @@ dictionary = {
 
 
 def get_stats(dictionary):
-    # 유니그램의 pair들의 빈도수를 카운트
     pairs = collections.defaultdict(int)
     for word, freq in dictionary.items():
         symbols = word.split()
@@ -51,17 +49,17 @@ def merge_dictionary(pair: dict[tuple[str, str], int], v_in: dict[str, int]):
     return v_out
 
 
-def get_bow(dictionary: dict[str, int]):
-    bow = set()
+def get_vocabulary(dictionary: dict[str, int]):
+    vocabulary = set()
     for word, freq in dictionary.items():
         symbols = word.split()
-        bow = bow.union(set(symbols))
-    return bow
+        vocabulary = vocabulary.union(set(symbols))
+    return vocabulary
 
 
 bpe_codes = {}
 bpe_codes_reverse = {}
-dict_length_history = [len(get_bow(dictionary))]
+dict_length_history = [len(get_vocabulary(dictionary))]
 
 for i in range(num_merges):
     pairs = get_stats(dictionary)
@@ -70,10 +68,13 @@ for i in range(num_merges):
 
     bpe_codes[best] = i
     bpe_codes_reverse[best[0] + best[1]] = best
-    bow = get_bow(dictionary)
-    dict_length_history.append(len(bow))
+    vocabulary = get_vocabulary(dictionary)
+    dict_length_history.append(len(vocabulary))
     if i % 10 == 0:
-        pprint(bow)
+        pprint(vocabulary)
 
 plt.plot(dict_length_history)
+plt.xlabel('num of iteration')
+plt.ylabel('vocabulary')
+plt.title('Byte Pair Encoding')
 plt.show()
