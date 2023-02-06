@@ -1,44 +1,8 @@
 import torch
-from modeling_heads import HeadVer1, HeadVer2, HeadVer3, HeadVer4
+from ..src import HeadVer4, GPTVer2
+from .test_utils import config, train, generate
 
 
-# --- testing v1 --- #
-def test_head_v1():
-    x = torch.Tensor([[[1, 2, 3],
-                       [4, 5, 6],
-                       [7, 8, 9]]])
-    answer = torch.Tensor([[[1,   2,   3  ],
-                            [2.5, 3.5, 4.5],
-                            [4,   5,   6  ]]])
-    head = HeadVer1()
-    assert torch.allclose(head(x), answer)
-
-
-# --- testing v2 --- #
-def test_head_v2():
-    x = torch.Tensor([[[1, 2, 3],
-                       [4, 5, 6],
-                       [7, 8, 9]]])
-    answer = torch.Tensor([[[1,   2,   3  ],
-                            [2.5, 3.5, 4.5],
-                            [4,   5,   6  ]]])
-    head = HeadVer2()
-    assert torch.allclose(head(x), answer)
-
-
-# --- testing v3 --- #
-def test_head_v3():
-    x = torch.Tensor([[[1, 2, 3],
-                       [4, 5, 6],
-                       [7, 8, 9]]])
-    answer = torch.Tensor([[[1,   2,   3  ],
-                            [2.5, 3.5, 4.5],
-                            [4,   5,   6  ]]])
-    head = HeadVer3()
-    assert torch.allclose(head(x), answer)
-
-
-# --- testing v4 --- #
 def test_head_v4_attention_has_no_notion_of_space():
     """
     :return:
@@ -81,10 +45,19 @@ def test_head_v4_logits_are_properly_normalized():
     assert torch.allclose(expected, was)
 
 
-def test_head_v4_why_divide_by_sqrt_of_n_embd():
+def test_head_v4_the_variance_of_wei_after_scale_is_1():
     B, T, C = 4, 128, 1024
     x = torch.randn(B, T, C)
     head = HeadVer4(T, C)
-    head(x, debug=True)  # (B, T, C)
+    head(x, test=True)  # (B, T, C)
     assert 1 == torch.round(head.var)
 
+
+def test_gpt_v2_and_head_v4_generates_text_given_a_context():
+    torch.manual_seed(1337)
+    head = HeadVer4(config['block_size'], config['embed_size'])
+    lm = GPTVer2(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    train(lm)  # may take a while
+    expected = "The quick brown fox jumps over the lazyor th manot utou s l spaif ant"
+    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    assert expected == was

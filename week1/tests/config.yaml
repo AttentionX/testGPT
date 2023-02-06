@@ -1,0 +1,8 @@
+# Path: week1/config.yaml
+batch_size: 32
+block_size: 8
+max_iters: 5000
+eval_iters: 200
+eval_interval: 500
+learning_rate: 0.001
+embed_size: 32
