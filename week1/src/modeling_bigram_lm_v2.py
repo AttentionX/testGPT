@@ -1,11 +1,7 @@
 from typing import Union
-from modeling_head_v1 import HeadVer1
-from modeling_head_v2 import HeadVer2
-from modeling_head_v3 import HeadVer3
-from modeling_head_v4 import HeadVer4
+from . import BigramLMVer1, HeadVer1, HeadVer2, HeadVer3, HeadVer4
 import torch
 import torch.nn as nn
-from modeling_bigram_lm_v1 import BigramLMVer1
 
 
 class BigramLMVer2(BigramLMVer1):
@@ -28,8 +24,7 @@ class BigramLMVer2(BigramLMVer1):
         # --- TODO --- #
         # idx and targets are both (B,T) tensor of integers
         tok_emb = self.token_embedding_table(idx)  # (B, T) ->  (B, T, C)
-        pos_emb = self.pos_encodings(T, C).to(idx.device)
-        x = tok_emb + pos_emb  # (B, T, C)
+        x = tok_emb + self.pos_encodings(T, C).to(tok_emb.device)
         x = self.head(x)  # apply one head  of self-attention. (B, T, C)
         logits = self.lm_head(x)  # (B, T, |V|)
         # ------------ #

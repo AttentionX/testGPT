@@ -1,5 +1,9 @@
+"""
+implement  BigramLMVer1.logits()  method
+and run this test with `pytest test_1.py -s --verbose`
+"""
 import torch
-from modeling_bigram_lm_v1 import BigramLMVer1
+from src import BigramLMVer1
 
 
 def test_bigram_lm_v1_logits_order_is_not_preserved():

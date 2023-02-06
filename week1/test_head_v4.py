@@ -1,5 +1,5 @@
 import torch
-from modeling_head_v4 import HeadVer4
+from week1.src.modeling_head_v4 import HeadVer4
 
 
 # --- testing v4 --- #

@@ -1,7 +1,7 @@
 import torch
 import timeit
-from modeling_head_v1 import HeadVer1
-from modeling_head_v2 import HeadVer2
+from week1.src.modeling_head_v1 import HeadVer1
+from week1.src.modeling_head_v2 import HeadVer2
 
 
 # --- testing v2 --- #
