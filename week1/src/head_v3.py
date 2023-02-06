@@ -12,7 +12,7 @@ class HeadVer3:
         :param x: (B, T, C)
         :return: out (B, T, C)
         """
-        # --- TODO --- #
+        # --- TODO 4 --- #
         T = x.shape[1]
         tril = torch.tril(torch.ones(T, T))
         wei = torch.zeros((T, T))

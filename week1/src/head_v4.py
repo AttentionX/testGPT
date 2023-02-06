@@ -30,7 +30,7 @@ class HeadVer4(torch.nn.Module):
             q = self.query(x)  # (B, T, C)
             k = self.key(x)  # (B, T, C)
             v = self.value(x)  # (B, T, C)
-        # --- TODO --- #
+        # --- TODO 5 --- #
         wei = q @ k.transpose(-2, -1) * C ** -0.5
         self.var = wei.var().detach()  # log the variance of the attention scores right after scaling with 1/sqrt(d_k)
         wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf'))  # (B, T, T)

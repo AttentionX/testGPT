@@ -24,7 +24,7 @@ running tests altogether:
 pytest -s -vv
 ```
 
-## TODO 1 - autoregressive completion (`generate`)
+## TODO 1 - a naive LM (`GPTVer1`)
 
 ```bash
 pytest tests/test_1.py -s -vv

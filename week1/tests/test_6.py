@@ -3,7 +3,31 @@ check if ver_1, ver_2, ver_3 preserves order.
 """
 import numpy as np
 import torch
-from ..src import GPTVer3, HeadVer4
+from ..src import HeadVer1, GPTVer1, GPTVer2, GPTVer3
+
+
+def test_gpt_v1_logits_order_is_not_preserved():
+    x = torch.IntTensor([[7, 7, 7, 7]])  # (B, T)
+    _, T = x.shape
+    V = 32
+    model = GPTVer1(V, T)
+    logits = model.logits(x)  # (B, T) -> (B, T, |V|)
+    assert torch.allclose(logits[:, 0, :], logits[:, 1, :])
+    assert torch.allclose(logits[:, 1, :], logits[:, 2, :])
+    assert torch.allclose(logits[:, 2, :], logits[:, 3, :])
+
+
+def test_gpt_v2_logits_order_is_not_preserved():
+    torch.manual_seed(1337)
+    x = torch.IntTensor([[7, 7, 7, 7]])  # (B, T)
+    _, T = x.shape
+    V = 32
+    C = 512
+    model = GPTVer2(HeadVer1(), V, C, T)
+    logits = model.logits(x)  # (B, T) -> (B, T, |V|)
+    assert torch.allclose(logits[:, 0, :], logits[:, 1, :])
+    assert torch.allclose(logits[:, 1, :], logits[:, 2, :])
+    assert torch.allclose(logits[:, 2, :], logits[:, 3, :])
 
 
 def test_gpt_v3_pos_encodings_each_pos_is_different():
@@ -22,15 +46,16 @@ def test_gpt_v3_pos_encodings_dist_stays_constant():
     assert np.linalg.norm(encodings[6] - encodings[4]) == np.linalg.norm(encodings[7] - encodings[5])
 
 
-def test_gpt_v3_logits_order_is_preserved_with_head_v4():
-    x1 = torch.IntTensor([[1, 2, 6]])  # (B, T)
-    x2 = torch.IntTensor([[2, 1, 6]])  # (B, T)
-    B, T = x1.shape
+def test_gpt_v3_logits_order_is_preserved():
+    x = torch.IntTensor([[7, 7, 7, 7]])  # (B, T)
+    _, T = x.shape
     V = 32
     C = 512
-    model = GPTVer3(HeadVer4(T, C), V, C, T)
-    y1, _ = model(x1)  # (B, T) -> (B, T, C)
-    y2, _ = model(x2)  # (B, T) -> (B, T, C)
-    assert not torch.allclose(y1[:, -1, :], y2[:, -1, :])
+    model = GPTVer3(HeadVer1(), V, C, T)
+    logits = model.logits(x)  # (B, T) -> (B, T, |V|)
+    assert not torch.allclose(logits[:, 0, :], logits[:, 1, :])
+    assert not torch.allclose(logits[:, 1, :], logits[:, 2, :])
+    assert not torch.allclose(logits[:, 2, :], logits[:, 3, :])
+
 
 
