@@ -2,7 +2,6 @@ import torch
 from ..src import HeadVer4, GPTVer2
 from .test_utils import config, train, generate
 
-
 # --- testing v4 --- #
 def test_head_v4_attention_has_no_notion_of_space():
     """
@@ -46,7 +45,7 @@ def test_head_v4_logits_are_properly_normalized():
     assert torch.allclose(expected, was)
 
 
-def test_head_v4_why_divide_by_sqrt_of_n_embd():
+def test_head_v4_the_variance_of_wei_after_scale_is_1():
     B, T, C = 4, 128, 1024
     x = torch.randn(B, T, C)
     head = HeadVer4(T, C)
