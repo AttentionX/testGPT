@@ -2,7 +2,7 @@ import torch
 from ..src import HeadVer4, GPTVer2
 from .test_utils import config, train, generate
 
-# --- testing v4 --- #
+
 def test_head_v4_attention_has_no_notion_of_space():
     """
     :return:

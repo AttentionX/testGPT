@@ -1,7 +1,6 @@
 """
 check if ver_1, ver_2, ver_3 preserves order.
 """
-import numpy as np
 import torch
 from .test_utils import config, train, generate
 from ..src import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
@@ -42,9 +41,9 @@ def test_gpt_v3_pos_encodings_each_pos_is_different():
 def test_gpt_v3_pos_encodings_dist_stays_constant():
     T, C = 10, 512
     encodings = GPTVer3.pos_encodings(T, C)
-    assert np.linalg.norm(encodings[2] - encodings[0]) == np.linalg.norm(encodings[3] - encodings[1])
-    assert np.linalg.norm(encodings[4] - encodings[2]) == np.linalg.norm(encodings[5] - encodings[3])
-    assert np.linalg.norm(encodings[6] - encodings[4]) == np.linalg.norm(encodings[7] - encodings[5])
+    assert torch.allclose(torch.norm(encodings[2] - encodings[0]), torch.norm(encodings[3] - encodings[1]))
+    assert torch.allclose(torch.norm(encodings[5] - encodings[3]), torch.norm(encodings[6] - encodings[4]))
+    assert torch.allclose(torch.norm(encodings[7] - encodings[5]), torch.norm(encodings[8] - encodings[6]))
 
 
 def test_gpt_v3_logits_order_is_preserved():
