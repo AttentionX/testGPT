@@ -74,7 +74,6 @@ def train(lm: Union[GPTVer1, GPTVer2]):
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         optimizer.step()
-    return lm
 
 
 def generate(lm: Union[GPTVer1, GPTVer2], context: str, max_new_tokens: int) -> str:

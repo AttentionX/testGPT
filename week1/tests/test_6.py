@@ -2,7 +2,7 @@
 check if ver_1, ver_2, ver_3 preserves order.
 """
 import torch
-from .test_utils import config, train, generate
+from .conftest import config, train, generate
 from ..src import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
 
 
@@ -60,7 +60,7 @@ def test_gpt_v3_logits_order_is_preserved():
 
 def test_gpt_v3_and_head_v4_generates_text_given_a_context():
     torch.manual_seed(1337)
-    head = HeadVer4(config['block_size'], config['embed_size'])
+    head = HeadVer4(config['block_size'], config['embed_size'], config['head_size'])
     lm = GPTVer3(head, config['vocab_size'], config['embed_size'], config['block_size'])
     train(lm)  # may take a while
     expected = "The quick brown fox jumps over the lazy stt, manot utou st the if ant"

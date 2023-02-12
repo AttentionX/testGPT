@@ -1,10 +1,13 @@
-from typing import Optional
 import torch
+from typing import Optional
 from torch.nn import functional as F
 
 
 class HeadVer4(torch.nn.Module):
-    """ i.e. one head of self-attention """
+    """
+    single-head self-attention
+    (redefining this in case you haven't finished week1/src/head_v4.py)
+    """
     def __init__(self, block_size: int, embed_size: int, head_size: int):
         super().__init__()
         self.key = torch.nn.Linear(embed_size, head_size, bias=False)  # (C, C)
@@ -30,7 +33,6 @@ class HeadVer4(torch.nn.Module):
             q = self.query(x)  # (B, T, C)
             k = self.key(x)  # (B, T, C)
             v = self.value(x)  # (B, T, C)
-        # --- TODO 5 --- #
         wei = q @ k.transpose(-2, -1) * C ** -0.5
         self.var = wei.var().detach()  # log the variance of the attention scores right after scaling with 1/sqrt(d_k)
         wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf'))  # (B, T, T)
@@ -38,5 +40,4 @@ class HeadVer4(torch.nn.Module):
         self.wei = wei.detach()  # log the final weights
         # perform the weighted aggregation of the values
         out = wei @ v  # (B, T, T) @ (B, T, C) -> (B, T, C)
-        # ------------ #
         return out

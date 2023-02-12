@@ -1,6 +1,6 @@
 import torch
 from ..src import HeadVer1, GPTVer2
-from .test_utils import train, generate, config
+from .conftest import train, generate, config
 
 
 def test_head_v1_takes_an_average_of_the_past_into_account():
