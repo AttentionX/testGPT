@@ -1,12 +1,12 @@
 import torch.nn
 
 
-class HeadVer6(torch.nn.Module):
+class MultiHeadVer2(torch.nn.Module):
     """
     multi-head self attention (fast)
     """
 
-    def __init__(self, block_size: int, embed_size: int, n_heads: int):
+    def __init__(self, embed_size: int, n_heads: int):
         """
         :param block_size: 32 (문장 속 토큰의 개수)
         :param embed_size: 512 ( 히든 벡처 차원의 크기)
