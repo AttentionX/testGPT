@@ -4,7 +4,11 @@ Running question: why do we need more than one head?
 
 
 # test: different heads learn different things
-def test_different_heads_learn_different_things():
+def test_multi_head_ver_1_different_heads_learn_different_things():
+    """
+    각 헤드가 다르다만 테스트 하자.
+    :return:
+    """
     pass
 
 
@@ -19,6 +23,6 @@ def test_multi_head_ver_2_is_faster_than_ver_1():
 
 
 # test: gpt learns faster with multi-head
-def test_gpt_v4_learns_faster_with_multi_head():
+def test_gpt_v4_learns_better_with_multi_head():
     pass
 

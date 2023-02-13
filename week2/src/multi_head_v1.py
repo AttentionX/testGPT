@@ -30,9 +30,8 @@ class MultiHeadVer1(torch.nn.Module):
         :param x: (B, T, C)
         :return: (B, T, C)
         """
-        # --- TODO ---- #
-        # torch.cat vs. torch.concat; what should I use?
-        out = torch.concat([head(x) for head in self.heads], dim=-1)  # (B, T, C) ->  (B, T, head_size * n_heads)
+        # --- TODO --- #
+        out = torch.concat([head(x) for head in self.heads], dim=-1)  # ... -> (B, T, head_size * n_heads)
         out = self.proj(out)  # (B, T, head_size * n_heads) * (head_size * n_heads, C) ->  (B, T, C)
-        # ------------- #
+        # ------------ #
         return out

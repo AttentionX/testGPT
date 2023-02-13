@@ -40,5 +40,5 @@ def test_layer_norm_mitigates_vanishing_gradient():
 
 
 # test: gpt v4 learns faster with LayerNorm
-def test_gpt_v4_learns_faster_with_layer_norm():
+def test_gpt_v4_learns_better_with_layer_norm():
     pass

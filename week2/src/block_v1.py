@@ -2,7 +2,6 @@ import torch
 from typing import Union
 from .multi_head_v1 import MultiHeadVer1
 from .multi_head_v2 import MultiHeadVer2
-from .block_v1_ffn import FeedForward
 
 
 class BlockVer1(torch.nn.Module):
@@ -12,7 +11,11 @@ class BlockVer1(torch.nn.Module):
         # n_embd: embedding dimension, n_head: the number of heads we'd like
         super().__init__()
         self.head = head
-        self.ffwd = FeedForward(embed_size)
+        self.ffwd = torch.nn.Sequential(
+            torch.nn.Linear(embed_size, 4 * embed_size),
+            torch.nn.ReLU(),
+            torch.nn.Linear(4 * embed_size, embed_size),
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
