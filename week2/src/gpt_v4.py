@@ -51,7 +51,7 @@ class GPTVer4(torch.nn.Module):
         # idx and targets are both (B,T) tensor of integers
         tok_emb = self.token_embedding_table(idx)  # (B, T) ->  (B, T, C)
         pos_emb = self.pos_embedding_table(torch.arange(T).to(tok_emb.device))  # (T) -> (T, C)
-        x = tok_emb + pos_emb  # broadcast add (T, C) to (B, T, C) across B.
+        x = tok_emb + pos_emb  # broadcast-add (T, C) to (B, T, C) across B.
         x = self.block(x)  # (B, T, C) ->  (B, T, C)
         logits = self.lm_head(x)  # (B, T, C) @ (B, T, |V|) -> (B, T, |V|)
         # ----------- #
