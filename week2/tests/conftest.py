@@ -3,7 +3,8 @@ from pathlib import Path
 from typing import Union
 import torch
 import yaml
-from ..src import GPTVer1, GPTVer2
+from ..src.gpt_v3 import GPTVer3
+from ..src.gpt_v4 import GPTVer4
 
 # --- load config --- #
 with open(Path(__file__).resolve().parent / "config.yaml", 'r') as f:
@@ -58,7 +59,7 @@ def estimate_loss(model: torch.nn.Module):
     return out
 
 
-def train(lm: Union[GPTVer1, GPTVer2]):
+def train(lm: Union[GPTVer3, GPTVer4]):
     lm = lm.to(config['device'])
     # create a PyTorch optimizer
     optimizer = torch.optim.AdamW(lm.parameters(), lr=config['learning_rate'])
@@ -76,7 +77,7 @@ def train(lm: Union[GPTVer1, GPTVer2]):
         optimizer.step()
 
 
-def generate(lm: Union[GPTVer1, GPTVer2], context: str, max_new_tokens: int) -> str:
+def generate(lm: Union[GPTVer3, GPTVer4], context: str, max_new_tokens: int) -> str:
     # generate text
     lm.eval()
     context = torch.tensor(encode(context), dtype=torch.long).to(config['device'])

@@ -1,3 +1,3 @@
 """
-test for GPTv7
+running question: why do we need Dropout?
 """

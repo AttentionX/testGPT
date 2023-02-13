@@ -1,4 +1,4 @@
-import torch.nn
+import torch
 
 
 class MultiHeadVer2(torch.nn.Module):
@@ -15,15 +15,19 @@ class MultiHeadVer2(torch.nn.Module):
         head_size = embed_size / n_heads
         """
         super().__init__()
+        assert embed_size % n_heads == 0
+        self.head_size = embed_size // n_heads
         self.query = torch.nn.Linear(embed_size, embed_size, bias=False)
         self.key = torch.nn.Linear(embed_size, embed_size, bias=False)
         self.value = torch.nn.Linear(embed_size, embed_size, bias=False)
-        assert embed_size % n_heads == 0
-        self.head_size = embed_size // n_heads
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         :param x: (B, T, C)
         :return:
         """
-        pass
+        # --- TODO --- #
+
+        out  = ...
+        # ------------ #
+        return out
