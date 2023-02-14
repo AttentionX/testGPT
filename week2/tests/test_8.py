@@ -3,6 +3,11 @@ Running question: why do we need Feedforward?
 """
 import torch
 from ..src.block_v1_ffn import FeedForward
+from ..src.block_v1 import BlockVer1
+from ..src.block_v2 import BlockVer2
+from ..src.multi_head_v2 import MultiHeadVer2
+from ..src.gpt_v4 import GPTVer4
+from .conftest import config, train
 
 
 def test_ffn_is_applied_position_wise():
@@ -21,7 +26,31 @@ def test_ffn_is_applied_position_wise():
     assert torch.allclose(y_1[1, :], y_2[0, :])
 
 
-# test: Feedforward is non-line
-# test:
-def test_gpt_v4_learns_better_with_feedforward():
-    pass
+def test_ffn_helps():
+    torch.manual_seed(1337)
+    T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
+    # --- multi-head --- #
+    gpt = GPTVer4(MultiHeadVer2(T, C, n_heads), config['vocab_size'], C, T)
+    losses_1 = train(gpt)
+    # --- multi-head + ffn --- #
+    gpt = GPTVer4(BlockVer1(MultiHeadVer2(T, C, n_heads), C), config['vocab_size'], C, T)
+    losses_2 = train(gpt)
+    # gpt should perform better with multi-head
+    assert losses_1['train'] > losses_2['train']
+    assert losses_1['val'] > losses_2['val']
+
+
+def test_residual_conn_helps():
+    torch.manual_seed(1337)
+    T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
+    # --- layers of multi-head + ffn --- #
+    contextualizer = torch.nn.Sequential(*[BlockVer1(MultiHeadVer2(T, C, n_heads), C) for _ in range(config['n_layers'])])
+    gpt = GPTVer4(contextualizer, config['vocab_size'], C, T)
+    losses_1 = train(gpt)
+    # --- layers of  multi-head + ffn + residual --- #
+    contextualizer = torch.nn.Sequential(*[BlockVer2(MultiHeadVer2(T, C, n_heads), C) for _ in range(config['n_layers'])])
+    gpt = GPTVer4(contextualizer, config['vocab_size'], C, T)
+    losses_2 = train(gpt)
+    # gpt should perform better with multi-head
+    assert losses_1['train'] > losses_2['train']
+    assert losses_1['val'] > losses_2['val']

@@ -46,7 +46,8 @@ def test_multi_head_ver_2_is_faster_than_ver_1():
 
 
 # test: gpt learns faster with multi-head
-def test_gpt_v4_learns_better_with_multi_head():
+def test_having_multiple_heads_helps():
+    torch.manual_seed(1337)
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- single-head --- #
     contextualizer = torch.nn.Sequential(*[HeadVer4(T, C, C) for _ in range(config['n_layers'])])
