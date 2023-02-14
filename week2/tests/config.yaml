@@ -7,3 +7,7 @@ eval_interval: 500
 learning_rate: 0.001
 embed_size: 32
 head_size: 32
+n_layers: 3
+n_heads: 4
+
+

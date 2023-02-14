@@ -2,12 +2,12 @@
 Running question: why do we need more than one head?
 """
 import timeit
-
 import torch
-from ..src.multi_head_v1_head_v4 import HeadVer4
 from ..src.multi_head_v1 import MultiHeadVer1
 from ..src.multi_head_v2 import MultiHeadVer2
-import random
+from ..src.multi_head_v1_head_v4 import HeadVer4
+from ..src.gpt_v4 import GPTVer4
+from .conftest import config, train
 
 
 # test: multi-head ver 2 is logically the same as multi-head ver 1
@@ -47,5 +47,18 @@ def test_multi_head_ver_2_is_faster_than_ver_1():
 
 # test: gpt learns faster with multi-head
 def test_gpt_v4_learns_better_with_multi_head():
-    pass
+    T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
+    # --- single-head --- #
+    contextualizer = torch.nn.Sequential(*[HeadVer4(T, C, C) for _ in range(config['n_layers'])])
+    gpt = GPTVer4(contextualizer, config['vocab_size'], C, T)
+    losses_single = train(gpt)
+    # --- multi-head --- #
+    contextualizer = torch.nn.Sequential(*[MultiHeadVer2(T, C, n_heads) for _ in range(config['n_layers'])])
+    gpt = GPTVer4(contextualizer, config['vocab_size'], C, T)
+    losses_multi = train(gpt)
+    # gpt should perform better with multi-head
+    assert losses_single['train'] > losses_multi['train']
+    assert losses_single['val'] > losses_multi['val']
+
+
 

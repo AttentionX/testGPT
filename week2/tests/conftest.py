@@ -59,10 +59,11 @@ def estimate_loss(model: torch.nn.Module):
     return out
 
 
-def train(lm: Union[GPTVer3, GPTVer4]):
+def train(lm: Union[GPTVer3, GPTVer4]) -> dict:
     lm = lm.to(config['device'])
     # create a PyTorch optimizer
     optimizer = torch.optim.AdamW(lm.parameters(), lr=config['learning_rate'])
+    losses = dict()
     for i in range(config['max_iters']):
         # every once in a while evaluate the loss on train and val sets
         if i % config['eval_interval'] == 0:
@@ -75,6 +76,7 @@ def train(lm: Union[GPTVer3, GPTVer4]):
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         optimizer.step()
+    return losses
 
 
 def generate(lm: Union[GPTVer3, GPTVer4], context: str, max_new_tokens: int) -> str:

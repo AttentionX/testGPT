@@ -7,6 +7,7 @@ import torch
 from .gpt_v3 import GPTVer3
 # from .block_v3_ln import LayerNorm
 
+
 class GPTVer4(GPTVer3):
     """
     learn positional embeddings from data
@@ -29,7 +30,7 @@ class GPTVer4(GPTVer3):
         tok_emb = self.token_embedding_table(idx)  # (B, T) ->  (B, T, C)
         pos_emb = self.pos_embedding_table(torch.arange(T).to(tok_emb.device))  # (T) -> (T, C)
         x = tok_emb + pos_emb  # broadcast-add (T, C) to (B, T, C) across B.
-        x = self.block(x)  # (B, T, C) ->  (B, T, C)
+        x = self.contextualizer(x)  # (B, T, C) ->  (B, T, C)
         
         # x = self.ln_f(x) -> 여기서 layernormalization 해줘야함!!
         
