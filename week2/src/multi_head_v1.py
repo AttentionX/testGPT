@@ -10,7 +10,7 @@ class MultiHeadVer1(torch.nn.Module):
     def __init__(self, block_size: int, embed_size: int, n_heads: int):
         """
         :param block_size: 32 (문장 속 토큰의 개수)
-        :param embed_size: 512 ( 히든 벡처 차원의 크기)
+        :param embed_size: 512 ( 히든 벡터 차원의 크기)
         :param n_heads: 8 (multi-head attention의 헤드 개수)
         ...
         head_size = embed_size / n_heads
