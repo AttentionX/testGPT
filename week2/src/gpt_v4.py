@@ -13,8 +13,8 @@ class GPTVer4(GPTVer3):
     learn positional embeddings from data
     """
 
-    def __init__(self, contextualizer: torch.nn.Module, vocab_size: int, embed_size: int, block_size: int):
-        super().__init__(contextualizer, vocab_size, embed_size)
+    def __init__(self, contextualizer: torch.nn.Module, vocab_size: int, block_size: int, embed_size: int):
+        super().__init__(contextualizer, vocab_size, block_size, embed_size)
         self.token_embedding_table = torch.nn.Embedding(vocab_size, embed_size)  # (|V|, C)
         self.pos_embedding_table = torch.nn.Embedding(block_size, embed_size)  # (T, C)
         # self.ln_f = LayerNorm(embed_size)

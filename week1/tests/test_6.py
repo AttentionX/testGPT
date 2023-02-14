@@ -23,7 +23,7 @@ def test_gpt_v2_logits_order_is_not_preserved():
     _, T = x.shape
     V = 32
     C = 512
-    model = GPTVer2(HeadVer1(), V, C, T)
+    model = GPTVer2(HeadVer1(), V, T, C)
     logits = model.logits(x)  # (B, T) -> (B, T, |V|)
     assert torch.allclose(logits[:, 0, :], logits[:, 1, :])
     assert torch.allclose(logits[:, 1, :], logits[:, 2, :])
@@ -51,7 +51,7 @@ def test_gpt_v3_logits_order_is_preserved():
     _, T = x.shape
     V = 32
     C = 512
-    model = GPTVer3(HeadVer1(), V, C, T)
+    model = GPTVer3(HeadVer1(), V, T, C)
     logits = model.logits(x)  # (B, T) -> (B, T, |V|)
     assert not torch.allclose(logits[:, 0, :], logits[:, 1, :])
     assert not torch.allclose(logits[:, 1, :], logits[:, 2, :])

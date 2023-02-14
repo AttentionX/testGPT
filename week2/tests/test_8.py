@@ -30,10 +30,10 @@ def test_ffn_helps():
     torch.manual_seed(1337)
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- multi-head --- #
-    gpt = GPTVer4(MultiHeadVer2(T, C, n_heads), config['vocab_size'], C, T)
+    gpt = GPTVer4(MultiHeadVer2(T, C, n_heads), config['vocab_size'], T, C)
     losses_1 = train(gpt)
     # --- multi-head + ffn --- #
-    gpt = GPTVer4(BlockVer1(MultiHeadVer2(T, C, n_heads), C), config['vocab_size'], C, T)
+    gpt = GPTVer4(BlockVer1(MultiHeadVer2(T, C, n_heads), C), config['vocab_size'], T, C)
     losses_2 = train(gpt)
     # gpt should perform better with multi-head
     assert losses_1['train'] > losses_2['train']
@@ -45,11 +45,11 @@ def test_residual_conn_helps():
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- layers of multi-head + ffn --- #
     contextualizer = torch.nn.Sequential(*[BlockVer1(MultiHeadVer2(T, C, n_heads), C) for _ in range(config['n_layers'])])
-    gpt = GPTVer4(contextualizer, config['vocab_size'], C, T)
+    gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_1 = train(gpt)
     # --- layers of  multi-head + ffn + residual --- #
     contextualizer = torch.nn.Sequential(*[BlockVer2(MultiHeadVer2(T, C, n_heads), C) for _ in range(config['n_layers'])])
-    gpt = GPTVer4(contextualizer, config['vocab_size'], C, T)
+    gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_2 = train(gpt)
     # gpt should perform better with multi-head
     assert losses_1['train'] > losses_2['train']

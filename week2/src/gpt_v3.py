@@ -5,10 +5,11 @@ from torch.nn import functional as F
 
 class GPTVer3(torch.nn.Module):
 
-    def __init__(self, contextualizer: torch.nn.Module, vocab_size: int, embed_size: int):
+    def __init__(self, contextualizer: torch.nn.Module, vocab_size: int, block_size: int, embed_size: int):
         # each token directly reads off the logits for the next token from a lookup table
         super().__init__()
         self.contextualizer = contextualizer
+        self.block_size = block_size
         self.token_embedding_table = torch.nn.Embedding(vocab_size, embed_size)  # (|V|, C)
         self.lm_head = torch.nn.Linear(embed_size, vocab_size)  # (C, |V|)
 

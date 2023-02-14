@@ -51,11 +51,11 @@ def test_having_multiple_heads_helps():
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- single-head --- #
     contextualizer = torch.nn.Sequential(*[HeadVer4(T, C, C) for _ in range(config['n_layers'])])
-    gpt = GPTVer4(contextualizer, config['vocab_size'], C, T)
+    gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_single = train(gpt)
     # --- multi-head --- #
     contextualizer = torch.nn.Sequential(*[MultiHeadVer2(T, C, n_heads) for _ in range(config['n_layers'])])
-    gpt = GPTVer4(contextualizer, config['vocab_size'], C, T)
+    gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_multi = train(gpt)
     # gpt should perform better with multi-head
     assert losses_single['train'] > losses_multi['train']
