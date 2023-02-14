@@ -27,6 +27,19 @@ class MultiHeadVer2(torch.nn.Module):
         :return:
         """
         # --- TODO --- #
+        B, T, C = x.shape
+
+        q = self.query(x)  # (N, L, H) * (H, H) -> (N, L, H)
+        k = self.key(x)  # (N, L, H) * (H, H) -> (N, L, H)
+        v = self.linear(x)  # (N, L, H) * (H, H) -> (N, L, H)
+        # split q, k, v into multi-heads
+        q = q.view(B, self.max_length, self.heads, self.head_size)  # (N, L, H) -> (N, L, heads, head_size)
+        k = k.view(B, self.max_length, self.heads, self.head_size)  # (N, L, H) -> (N, L, heads, head_size)
+        v = v.view(B, self.max_length, self.heads, self.head_size)  # (N, L, H) -> (N, L, heads, head_size)
+        # make q, k and v matmul-compatible
+        q = q.transpose(1, 2)  # (N, L, heads, head_size) -> (N, heads, L, head_size)
+        k = k.transpose(1, 2)  # (N, L, heads, head_size) -> (N, heads, L, head_size)
+        v = v.transpose(1, 2)  # (N, L, heads, head_size) -> (N, heads, L, head_size)
 
         out  = ...
         # ------------ #
