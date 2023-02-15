@@ -4,6 +4,9 @@ from torch.nn import functional as F
 
 
 class GPTVer3(torch.nn.Module):
+    """
+    redefining this here in case you haven't completed week1/src/gpt_v3.py
+    """
 
     def __init__(self, contextualizer: torch.nn.Module, vocab_size: int, block_size: int, embed_size: int):
         # each token directly reads off the logits for the next token from a lookup table

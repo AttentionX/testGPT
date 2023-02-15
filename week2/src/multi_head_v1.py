@@ -6,7 +6,6 @@ class MultiHeadVer1(torch.nn.Module):
     """
     multi-head self attention (slow)
     """
-
     def __init__(self, block_size: int, embed_size: int, n_heads: int):
         """
         :param block_size: 32 (문장 속 토큰의 개수)
@@ -23,7 +22,7 @@ class MultiHeadVer1(torch.nn.Module):
             HeadVer4(block_size, embed_size, head_size)
             for _ in range(n_heads)
         ])
-        self.proj = torch.nn.Linear(head_size * n_heads, embed_size)
+        self.proj = torch.nn.Linear(embed_size, embed_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -31,7 +30,10 @@ class MultiHeadVer1(torch.nn.Module):
         :return: (B, T, C)
         """
         # --- TODO --- #
-        out = torch.concat([head(x) for head in self.heads], dim=-1)  # ... -> (B, T, head_size * n_heads)
-        out = self.proj(out)  # (B, T, head_size * n_heads) * (head_size * n_heads, C) ->  (B, T, C)
+        # (B, T, head_size) * n_num_heads --concat--> (B, T, C)
+        concats = torch.concat([head(x) for head in self.heads], dim=-1)
+        # aggregate concatenations
+        # (B, T, C) * (C, C) ->  (B, T, C)
+        out = self.proj(concats)
         # ------------ #
         return out

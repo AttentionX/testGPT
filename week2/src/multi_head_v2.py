@@ -18,11 +18,12 @@ class MultiHeadVer2(torch.nn.Module):
         assert embed_size % n_heads == 0
         self.n_heads = n_heads
         self.head_size = embed_size // n_heads
+        self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
+        # --- layers to optimise --- #
         self.query = torch.nn.Linear(embed_size, embed_size, bias=False)
         self.key = torch.nn.Linear(embed_size, embed_size, bias=False)
         self.value = torch.nn.Linear(embed_size, embed_size, bias=False)
         self.proj = torch.nn.Linear(embed_size, embed_size)
-        self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -38,25 +39,23 @@ class MultiHeadVer2(torch.nn.Module):
         q = q.contiguous().view(B, T, self.n_heads, self.head_size)  # (B, T, C) -> (B, T, n_heads, head_size)
         k = k.contiguous().view(B, T, self.n_heads, self.head_size)  # (B, T, C) -> (B, T, n_heads, head_size)
         v = v.contiguous().view(B, T, self.n_heads, self.head_size)  # (B, T, C) -> (B, T, n_heads, head_size)
-        # make q, k and v matmul-compatible
+        # make q, k, v matmul-compatible
         q = q.transpose(1, 2)  # (B, T, n_heads, head_size) -> (B, n_heads, T, head_size)
         k = k.transpose(1, 2)  # (B, T, n_heads, head_size) -> (B, n_heads, T, head_size)
         v = v.transpose(1, 2)  # (B, T, n_heads, head_size) -> (B, n_heads, T, head_size)
-        # compute attention scores
-        # Q * K^T:  compute query-key similarities
-        # (B, n_heads, T, head_size), (B, n_heads, T, head_size) ->  (B, n_heads, T, T)
-        wei = torch.einsum("...qh,...kh->...qk", q, k)
-        # Q * K^T / sqrt(d_k): down-scale similarities to prevent gradient vanishing
-        wei = wei * C ** -0.5
+        # compute attention scores; (Q * K^T: compute query-key similarities)
+        # (..., T, head_size) @ (..., head_size, T) ->  (..., T, T)
+        sims = q @ k.transpose(-2, -1) * (C ** -0.5)
         # apply padding mask and/or subsequent mask
-        wei = wei.masked_fill(self.tril[:T, :T], float("-inf"))
+        sims = sims.masked_fill(self.tril[:T, :T] == 0, float("-inf"))
         # softmax(Q * K^T / sqrt(d_k)): normalise the sims over keys
-        wei = torch.softmax(wei, dim=-1)
+        attentions = torch.softmax(sims, dim=-1)
         # softmax(Q * K^T / sqrt(d_k)) * V: soft-align values with respect to each query
-        # (B, n_heads, T, T),  (B, n_heads, T, head_size) -> (B, n_heads, T, head_size)
-        wei = torch.einsum("...qv,...vh->...qh", wei, v)
-        wei = wei.transpose(1, 2)  # (B, n_heads, T, head_size) -> (B, T, n_heads, head_size)
-        wei = wei.contiguous().view(B, T, C)  # (B, T, n_heads, head_size) -> (B, T, C)
-        out = self.proj(wei)  # (B, T, C) @ (C, C) -> (B, T, C)
+        # (..., T, T) @ (..., T, head_size) -> (..., T, head_size)
+        alignments = attentions @ v
+        # (B, n_heads, T, head_size) --transpose--> (B, T, n_heads, head_size) --concat--> (B, T, C)
+        concats = alignments.transpose(1, 2).contiguous().view(B, T, C)
+        # aggregate concatenations
+        out = self.proj(concats)  # (B, T, C) @ (C, C) -> (B, T, C)
         # ------------ #
         return out
