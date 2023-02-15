@@ -40,7 +40,7 @@ week2에서는 week1에서 완성한 GPTVer3(one-head self-attention + positiona
 ## MultiHeadVer1
 <img src='img/MultiHeadVer1.png' width=250>  
 
-week1에서 구현했던 HeadVer4(self-attention head)를 바탕으로 multi-head attention을 구현하고자 합니다. self-attention head에서 Q, K, V는 각각 FC layer를 통과하고나면 (batch_size, block_size, embed_size) → (batch_size, block_size, head_size)로 shape이 변경이 됩니다. 그리고 embed_size = head_size * n_heads의 관계가 성립합니다.
+week1에서 구현했던 HeadVer4(self-attention head)를 바탕으로 multi-head attention을 구현하고자 합니다. self-attention head에서 Q, K, V가 각각 FC layer를 통과하고나면 (batch_size, block_size, embed_size) → (batch_size, block_size, head_size)로 shape이 변경이 됩니다. 그리고 embed_size = head_size * n_heads의 관계가 성립합니다.
 
 #### TODO
 `input x를 n_heads 개의 self-attention head를 통과한 후 head_output을 concatnate합니다. 그리고 projection layer(FC)를 통과시켜 multi-head attention을 구현해주세요`
