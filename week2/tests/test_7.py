@@ -5,7 +5,7 @@ import timeit
 import torch
 from ..src.multi_head_v1 import MultiHeadVer1
 from ..src.multi_head_v2 import MultiHeadVer2
-from ..src.multi_head_v1_head_v4 import HeadVer4
+from ..src.head_v4 import HeadVer4
 from ..src.gpt_v4 import GPTVer4
 from .conftest import config, train
 

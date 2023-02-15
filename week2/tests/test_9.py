@@ -3,7 +3,7 @@ running question: why do we need LayerNorm?
 """
 import torch
 from ..src.gpt_v4 import GPTVer4
-from ..src.block_v3_ln import LayerNorm
+from ..src.layer_normalization import LayerNorm
 from ..src.block_v2 import BlockVer2
 from ..src.block_v3 import BlockVer3
 from ..src.multi_head_v2 import MultiHeadVer2

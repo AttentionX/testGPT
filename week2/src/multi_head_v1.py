@@ -1,5 +1,5 @@
 import torch
-from .multi_head_v1_head_v4 import HeadVer4
+from .head_v4 import HeadVer4
 
 
 class MultiHeadVer1(torch.nn.Module):

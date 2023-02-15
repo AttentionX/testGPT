@@ -2,7 +2,7 @@
 Running question: why do we need Feedforward?
 """
 import torch
-from ..src.block_v1_ffn import FeedForward
+from ..src.feed_forward import FeedForward
 from ..src.block_v1 import BlockVer1
 from ..src.block_v2 import BlockVer2
 from ..src.multi_head_v2 import MultiHeadVer2

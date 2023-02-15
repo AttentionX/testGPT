@@ -6,7 +6,7 @@ from typing import Union
 from .multi_head_v1 import MultiHeadVer1
 from .multi_head_v2 import MultiHeadVer2
 from .block_v2 import BlockVer2
-from .block_v3_ln import LayerNorm
+from .layer_normalization import LayerNorm
 
 
 class BlockVer3(BlockVer2):
