@@ -5,11 +5,11 @@ from torch.nn import functional as F
 
 class HeadVer4(torch.nn.Module):
     """ i.e. one head of self-attention """
-    def __init__(self, block_size: int, embed_size: int):
+    def __init__(self, block_size: int, embed_size: int, head_size: int):
         super().__init__()
-        self.key = torch.nn.Linear(embed_size, embed_size, bias=False)  # (C, C)
-        self.query = torch.nn.Linear(embed_size, embed_size, bias=False)  # (C, C)
-        self.value = torch.nn.Linear(embed_size, embed_size, bias=False)  # (C, C)
+        self.key = torch.nn.Linear(embed_size, head_size, bias=False)  # (C, C)
+        self.query = torch.nn.Linear(embed_size, head_size, bias=False)  # (C, C)
+        self.value = torch.nn.Linear(embed_size, head_size, bias=False)  # (C, C)
         self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
         self.var: Optional[torch.Tensor] = None
         self.wei: Optional[torch.Tensor] = None

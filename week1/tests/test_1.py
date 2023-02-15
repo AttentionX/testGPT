@@ -4,7 +4,7 @@ and run this test with `pytest test_1.py -s --verbose`
 """
 import torch
 from ..src import GPTVer1
-from .test_utils import config, train, generate
+from .conftest import config, train, generate
 
 
 def test_gpt_v1_generates_text_given_a_context():

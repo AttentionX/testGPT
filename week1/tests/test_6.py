@@ -2,7 +2,7 @@
 check if ver_1, ver_2, ver_3 preserves order.
 """
 import torch
-from .test_utils import config, train, generate
+from .conftest import config, train, generate
 from ..src import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
 
 
@@ -23,7 +23,7 @@ def test_gpt_v2_logits_order_is_not_preserved():
     _, T = x.shape
     V = 32
     C = 512
-    model = GPTVer2(HeadVer1(), V, C, T)
+    model = GPTVer2(HeadVer1(), V, T, C)
     logits = model.logits(x)  # (B, T) -> (B, T, |V|)
     assert torch.allclose(logits[:, 0, :], logits[:, 1, :])
     assert torch.allclose(logits[:, 1, :], logits[:, 2, :])
@@ -51,7 +51,7 @@ def test_gpt_v3_logits_order_is_preserved():
     _, T = x.shape
     V = 32
     C = 512
-    model = GPTVer3(HeadVer1(), V, C, T)
+    model = GPTVer3(HeadVer1(), V, T, C)
     logits = model.logits(x)  # (B, T) -> (B, T, |V|)
     assert not torch.allclose(logits[:, 0, :], logits[:, 1, :])
     assert not torch.allclose(logits[:, 1, :], logits[:, 2, :])
@@ -60,7 +60,7 @@ def test_gpt_v3_logits_order_is_preserved():
 
 def test_gpt_v3_and_head_v4_generates_text_given_a_context():
     torch.manual_seed(1337)
-    head = HeadVer4(config['block_size'], config['embed_size'])
+    head = HeadVer4(config['block_size'], config['embed_size'], config['head_size'])
     lm = GPTVer3(head, config['vocab_size'], config['embed_size'], config['block_size'])
     train(lm)  # may take a while
     expected = "The quick brown fox jumps over the lazy stt, manot utou st the if ant"
