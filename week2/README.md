@@ -14,28 +14,8 @@ Python 3.9.12
 pip3 install torch==1.13.1 pytest==7.2.1 pyyaml==6.0
 ```
 
-## TODO's
-
-
-### TODO - 1
-
-
-### TODO - 2
-
-
-### TODO - 3
-
-
-### TODO - 4
-
-
-### TODO - 5
-
-<br>
-
 ## Introduction
 week2에서는 week1에서 완성한 GPTVer3(one-head self-attention + positional encoding)와 HeadVer4(self-attention head)를 더 발전시켜 최종적으로 NanoGPT를 구현하는 것을 목표로 합니다.
-
 
 
 ## MultiHeadVer1
