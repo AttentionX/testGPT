@@ -15,12 +15,10 @@ class BlockVer3(BlockVer2):
         super().__init__(head, embed_size)
         self.ln1 = LayerNorm(embed_size)
         self.ln2 = LayerNorm(embed_size)
-        self.ln3 = LayerNorm(embed_size)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # --- TODO --- #
+        # --- TODO 3-2 --- #
         x = x + self.head(self.ln1(x))
         x = x + self.ffwd(self.ln2(x))
-        x = self.ln3(x)
-        # ------------ #
+        # ---------------- #
         return x

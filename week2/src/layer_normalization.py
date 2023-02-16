@@ -21,8 +21,8 @@ class LayerNorm(torch.nn.Module):
         :param x: (B, T, C)
         :return: (B, T, C)
         """
-        # --- TODO --- #
+        # --- TODO 3-1 --- #
         mean = x.mean(-1, keepdim=True)  # (B, T, C) ->  (B, T, 1)
         std = x.std(-1, keepdim=True)  # (B, T, C) ->  (B, T, 1)
         return self.gamma * (x - mean) / (std + self.eps) + self.beta
-        # ------------ #
+        # ---------------- #

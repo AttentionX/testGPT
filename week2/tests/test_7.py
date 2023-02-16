@@ -35,9 +35,9 @@ def test_multi_head_helps():
     # --- MultiHeadVer4: multi-head --- #
     contextualizer = MultiHeadVer1(T, C, n_heads)
     gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
-    losses_2 = train(gpt)
+    losses_multi = train(gpt)
     # gpt should perform better with multi-head
-    assert losses_1['train'] > losses_2['train']
+    assert losses_1['train'] > losses_multi['train']
 
 
 def test_multi_head_ver_2_is_faster_than_ver_1():

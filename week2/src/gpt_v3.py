@@ -6,6 +6,7 @@ from torch.nn import functional as F
 class GPTVer3(torch.nn.Module):
     """
     redefining this here in case you haven't completed week1/src/gpt_v3.py
+    Week1에서 구현했던 모델입니다.  Week2를 바로 시작할 수 있도록 재정의 했습니다.
     """
 
     def __init__(self, contextualizer: torch.nn.Module, vocab_size: int, block_size: int, embed_size: int):

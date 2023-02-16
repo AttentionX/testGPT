@@ -9,8 +9,8 @@ class BlockVer2(BlockVer1):
         :param x: (B, T, C)
         :return: (B, T, C)
         """
-        # --- TODO --- #
+        # --- TODO 2-3 --- #
         x = x + self.head(x)
         x = x + self.ffwd(x)
-        # ------------ #
+        # --------------- #
         return x

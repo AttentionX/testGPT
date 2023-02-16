@@ -29,11 +29,11 @@ class MultiHeadVer1(torch.nn.Module):
         :param x: (B, T, C)
         :return: (B, T, C)
         """
-        # --- TODO --- #
+        # --- TODO 1-1 --- #
         # (B, T, head_size) * n_num_heads --concat--> (B, T, C)
         concats = torch.concat([head(x) for head in self.heads], dim=-1)
         # aggregate concatenations
         # (B, T, C) * (C, C) ->  (B, T, C)
         out = self.proj(concats)
-        # ------------ #
+        # ---------------- #
         return out
