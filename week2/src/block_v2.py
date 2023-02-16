@@ -10,7 +10,6 @@ class BlockVer2(BlockVer1):
         :return: (B, T, C)
         """
         # --- TODO 2-3 --- #
-        x = x + self.head(x)
-        x = x + self.ffwd(x)
+        raise NotImplementedError
         # --------------- #
         return x
