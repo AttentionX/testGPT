@@ -20,6 +20,9 @@ class GPTVer4(GPTVer3):
         """
         B, T = idx.shape
         # --- TODO --- #
+        """
+        encode learned positional embeddings (self.pos_embedding_table) to tok_emb
+        """
         # idx and targets are both (B,T) tensor of integers
         tok_emb = self.token_embedding_table(idx)  # (B, T) ->  (B, T, C)
         pos_emb = self.pos_embedding_table(torch.arange(T).to(tok_emb.device))  # (T) -> (T, C)

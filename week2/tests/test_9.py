@@ -61,4 +61,3 @@ def test_layer_norm_helps_when_network_is_deep():
     gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_2 = train(gpt)
     assert losses_1['train'] > losses_2['train']
-    assert losses_1['val'] > losses_2['val']

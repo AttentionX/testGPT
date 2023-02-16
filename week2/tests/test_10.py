@@ -1,7 +1,6 @@
 """
 running question: why do we need Dropout?
 """
-import pytest
 import torch
 from ..src.block_v4 import BlockVer4
 from ..src.block_v3 import BlockVer3
@@ -43,25 +42,26 @@ def test_block_ver_4_output_is_always_the_same_in_eval_mode():
     assert torch.allclose(out_3, out_4)
 
 
-def test_dropout_helps_when_network_is_deep():
+def test_dropout_helps():
     """
     dropout mitigates overfitting
     """
     torch.manual_seed(1337)
     T, C, n_heads, dropout = config['block_size'], config['embed_size'], config['n_heads'], config['dropout']
+    # push the model to overfit
+    config['max_iters'] = 10000
+    config['learning_rate'] = 0.01
     # --- BlockVer3: layers of multi-head + ffn + residual + layer norm --- #
-    contextualizer = torch.nn.Sequential(
-        *[BlockVer3(MultiHeadVer2(T, C, n_heads), C) for _ in range(config['n_layers'])])
+    contextualizer = BlockVer3(MultiHeadVer2(T, C, n_heads), C)
     gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_1 = train(gpt)
     # --- BlockVer4: layers of multi-head + ffn + residual + layer norm + dropout --- #
-    contextualizer = torch.nn.Sequential(
-        *[BlockVer4(MultiHeadVer2(T, C, n_heads), C, dropout) for _ in range(config['n_layers'])])
+    contextualizer = BlockVer4(MultiHeadVer2(T, C, n_heads), C, dropout)
     gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_2 = train(gpt)
+    # "mitigates overfitting" = train loss is bigger but validation loss is smaller.
     assert losses_1['train'] < losses_2['train']
     assert losses_1['val'] > losses_2['val']
-
 
 
 

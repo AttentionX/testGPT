@@ -47,7 +47,7 @@ def get_batch(split: str):
 @torch.no_grad()
 def estimate_loss(model: torch.nn.Module):
     out = {}
-    model.eval()
+    model.eval()  # to deactivate dropout
     for split in ['train', 'val']:
         losses = torch.zeros(config['eval_iters'])
         for k in range(config['eval_iters']):
