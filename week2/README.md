@@ -96,7 +96,6 @@ pytest tests/test_9.py -s -vv
 ### test_layer_norm_helps_when_network_is_deep
 
 <img src='img/BlockVer3.png' width=250>
-![img.png](img.png)
 
 > TODO 3-2: `BlockVer3.forward`를 구현해주세요. LayerNorm을 위의 그림처럼 Multi-Head의 input, FeedForward의 input 총 2곳에 추가하시면 됩니다.
 
