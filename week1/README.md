@@ -67,7 +67,7 @@ week1의 최종 목표는 one-head self-attention(HeadVer4)를 적용한 GPTVer3
 ## Tokenization
 자연어처리를 위해선 말뭉치를 적절히 전처리 해야합니다. 
 
-Tokenization은 그런 전처리 과정의 시작으로, 말뭉치를 token이라는 단위로 나눠주는 작업을 말합니다. 그런데 토큰화를하다보면 여러 선택의 순간이 발생합니다. 가령 *I don’t like olive* 라는 문장이 존재할 때 *don’t*를 토큰화하는 방법은 다양합니다. 
+Tokenization은 전처리 과정의 시작으로, 말뭉치를 token이라는 단위로 나눠주는 작업을 말합니다. 그런데 토큰화를하다보면 여러 선택의 순간이 발생합니다. 가령 *I don’t like olive* 라는 문장이 존재할 때 *don’t*를 토큰화하는 방법은 다양합니다. 
 
 - don / t
 - dont
@@ -92,7 +92,7 @@ $$
 
 가령 `context` 에서 like가 10번 등장했고, like apple이 8번 like orange가 2번 등장했다면 $P(apple|like)$ 는 0.8,  $P(orange|like)$ 는 0.2가 됩니다. BigramLM은 이처럼 마지막 token에 대해 다음에 올 token에 대한 확률을 바탕으로 하는 LM입니다.
 
-`GPTVer1` 에선 ( `vocab_size` x `vocab_size`)의 `token_embedding_table`을 만들고 이를 학습합니다. 각 token의 정수 인코딩 값은 table의 index에 대응하고, `token_embedding_table`(index)는 다음에 나올 토큰에 대한 로짓값이 됩니다.
+`GPTVer1` 에선 (`vocab_size` x `vocab_size`)의 `token_embedding_table`을 만들고 이를 학습합니다. 각 token의 정수 인코딩 값은 table의 index에 대응하고, `token_embedding_table(index)`는 다음에 나올 토큰에 대한 로짓값이 됩니다.
 
 Language Model로 text를 `generate`할 때 classification처럼 max probability를 선택하는 것이 아니라 확률분포에서 다음 토큰을 임의추출합니다. 
 
@@ -107,15 +107,15 @@ idx_next = torch.multinomial(probs, num_samples=1)
 
 `GPTVer1` 은 직전 token의 정보만을 토대로 다음 token을 예측합니다. 하지만, 이 경우 앞 부분과 뒷 부분의 문맥이 전혀 연결되지 않는 경우도 생길 수 있습니다.
 
- 반면 `GPTVer2` 는 `HeadVer1` 은 직전 token과 함께 이전 token들의 embedding vector의 평균으로 다음 token을 예측하고자 합니다. 가령 4th token을 예측하고자 하면 1st, 2nd, 3rd token의 embedding vector의 평균을 계산하고자 합니다.
+`GPTVer2`와 `HeadVer1`에서는 직전 token과 함께 이전 token들의 embedding vector의 평균으로 다음 token을 예측하고자 합니다. 가령 4th token을 예측하고자 하면 1st, 2nd, 3rd token의 embedding vector의 평균으로 다음 token을 예측하고자 합니다.
 
-GPTVer2에서는 embedding table이 (vocab_size x n_embd)로 변경됐습니다. 최종 단계에서 fully connected layer(self.lm_head)를 사용하여 logits을 (batch, timestep, vocab_size)로 만들어주세요.
-
-`hint: embedding table → Head → FC`
-
-Head1에서는 이를 **2중 for문을 사용하여 구현해주세요**
+HeadVer1에서는 이를 **2중 for문을 사용하여 구현해주세요**
 
 `hint: Each example across batch dimension is of course processed completely independently and never "talk" to each other`
+
+GPTVer2에서는 embedding table이 (`vocab_size` x `embed_size`)로 변경됐습니다. 최종 단계에서 fully connected layer(self.lm_head)를 사용하여 logits을 (`batch_size`, `block_size`, `vocab_size`)로 만들어주세요.
+
+`hint: embedding table → Head → FC`
 
 ## HeadVer2
 HeadVer2에서는 HeadVer1을 **matrix multiplication을 사용하여 구현해주세요**
@@ -138,7 +138,7 @@ TODO 위의 if debug: 는 test code를 위한 부분이니, 이 부분은 수정
 
 HeadVer4에서는 scailing을 잘 했는지와 softmax를 잘 적용했는지에 대해 test를 합니다. 이때 test code 적용에 필요한 parameter를 저장해주셔야합니다. 아래는 pseudo code이고 각 연산을 마무리하고 해당 변수에 저장하시면 됩니다.
 
-1. self.var = (Q@K^T / sqrt(d_k)).var() ← scailing 연산 이후 variance를 저장하시면 됩니다.
+1. self.var = (Q@K^T / sqrt(d_k)).var() ← scailing 이후 variance를 저장하시면 됩니다.
 2. self.wei = Attention(Q, K, V) ← 최종 wei를 저장하시면 됩니다.
 
 `hint: "Scaled" attention additional divides wei by 1/sqrt(head_size). This makes it so when input Q,K are unit variance, wei will be unit variance too and Softmax will stay diffuse and not saturate too much.`
@@ -146,9 +146,9 @@ HeadVer4에서는 scailing을 잘 했는지와 softmax를 잘 적용했는지에
 ## GPTVer3
 완성한 HeadVer4를 사용하여 GPTVer3 구현하고자 합니다.
 
-위에서 구현한 HeadVer4는 과거의 정보를 반영을 하지만, RNN과 달리 Sequential data를 반영하지 못합니다. 이를 보완하기 위해 **Positional encoding과 최종 logits을 구현해봅니다.**
+위에서 구현한 HeadVer4는 과거의 정보를 반영을 하지만, RNN과 달리 Sequential data를 반영하지 못합니다. 이를 해결하기 위해 **Positional encoding과 최종 logits을 구현해봅니다.**
 
-GPTVer3에서는 embedding table이 (vocab_size x n_embd)로 변경됐습니다. 최종 단계에서 fully connected layer(self.lm_head)를 사용하여 logits을 (batch, timestep, vocab_size)로 만들어주세요.
+GPTVer3에서도 embedding table의 shape이 (`vocab_size` x `embed_size`) 입니다. 최종 단계에서 fully connected layer(self.lm_head)를 사용하여 logits을 (`batch_size`, `block_size`, `vocab_size`)로 만들어주세요.
 
 ### Positional encoding
 
