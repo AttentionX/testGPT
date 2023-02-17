@@ -56,7 +56,8 @@ pytest tests/test_8.py -s -vv
 
 `BlockVer1`은 위에서 구현한 Multi-Head Attention과 FeedForward를 수행합니다.
 
-> TODO 2-1: `FeedForward`를 구현해주세요.
+> TODO 2-1: `FeedForward`를 구현해주세요. $FFNN(x)=Max(0, W_1x+b_1)W_2 + b_2$  
+> ($W_1$의 shape은 (embed_size, 4 $\times$ embed_size), $W_2$의 shape은 (4 $\times$ embed_size, embed_size) 입니다.)
 
 > TODO 2-2: `BlockVer1.forward`을 구현해주세요. Multi-Head Attention을 통과한 뒤 FeedForward layer를 통과시키면 됩니다.
 
