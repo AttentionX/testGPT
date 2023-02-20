@@ -1,8 +1,6 @@
-"""
 
-"""
 import torch
-from . import GPTVer2
+from .gpt_v2 import GPTVer2
 
 
 class GPTVer3(GPTVer2):
@@ -18,7 +16,7 @@ class GPTVer3(GPTVer2):
         # idx and targets are both (B,T) tensor of integers
         tok_emb = self.token_embedding_table(idx)  # (B, T) ->  (B, T, C)
         x = tok_emb + self.pos_encodings(T, C).to(tok_emb.device)  # (B, T, C). broadcast add (T, C) across B.
-        x = self.head(x)  # (B, T, C) ->  (B, T, C)
+        x = self.contextualizer(x)  # (B, T, C) ->  (B, T, C)
         logits = self.lm_head(x)  # (B, T, C) @ (B, T, |V|) -> (B, T, |V|)
         # ------------- #
         return logits

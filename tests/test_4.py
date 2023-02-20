@@ -1,6 +1,6 @@
 import torch
 import timeit
-from ..src import HeadVer1, HeadVer3
+from learngpt import HeadVer1, HeadVer3
 
 
 def test_head_v3_logically_the_same_as_head_v1():

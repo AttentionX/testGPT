@@ -1,4 +1,4 @@
-import torch.nn
+import torch
 
 
 class FeedForward(torch.nn.Module):

@@ -1,6 +1,6 @@
 import timeit
 import torch
-from ..src import HeadVer1, HeadVer2
+from learngpt import HeadVer1, HeadVer2
 
 
 # --- testing v2 --- #
