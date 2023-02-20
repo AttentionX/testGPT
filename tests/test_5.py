@@ -1,5 +1,5 @@
 import torch
-from ..src import HeadVer4, GPTVer2
+from learngpt import HeadVer4, GPTVer2
 from .conftest import config, train, generate
 
 

@@ -1,8 +1,9 @@
 import torch
-from week2.src.gpt_v4 import GPTVer4
-from week2.src.block_v4 import BlockVer4
-from week2.src.multi_head_v2 import MultiHeadVer2
-from week2.tests.conftest import generate, train, config
+from learngpt.gpt_v4 import GPTVer4
+from learngpt.block_v4 import BlockVer4
+from learngpt.multi_head_v2 import MultiHeadVer2
+from tests.conftest import generate, train, config
+
 torch.manual_seed(1337)
 
 
