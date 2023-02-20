@@ -14,8 +14,7 @@ pip3 install torch==1.13.1 pytest==7.2.1 pyyaml==6.0
 
 ## TODO's
 ### TODO 1 - a naive LM (`GPTVer1`)
-1. Instruction
-    **Create a naive bigram language model**
+1. **Create a naive bigram language model**
     1. Get the predictions (logit)
     2. Apply softmax on the last prediction
     3. Sample from the distribution
@@ -23,7 +22,7 @@ pip3 install torch==1.13.1 pytest==7.2.1 pyyaml==6.0
 2. Files to Edit
     - gpt_v1.py
 3. Test Cases
-    - 
+    - Get the same output as the test case
 ```bash
 pytest tests/test_1.py -s -vv
 ```
