@@ -1,5 +1,5 @@
-## 1. Bigram Language Model (`GPTVer1`)
-1. **Create a naive bigram language model**
+## 1. Bigram 언어 모델 (`GPTVer1`)
+1. **단순한 biram 언어모델을 구현하세요**
     1. Get the predictions (logit)
     2. Apply softmax on the last prediction
     3. Sample from the distribution
