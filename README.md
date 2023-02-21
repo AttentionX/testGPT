@@ -524,6 +524,6 @@ Korean | English |
 
 # Contributors
 
-Eu-Bin KIM |  ... | ... |  
+Ha Hyeon Choi |  Eu-Bin KIM | ... |  
 --- | --- | --- |
-... | ... | ... |
+하현님 최고 | ... | ... |
