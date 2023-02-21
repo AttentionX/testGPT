@@ -7,22 +7,39 @@
 2. Files to Edit
     - gpt_v1.py
 3. Test Cases
-    - Get the same output as the test case
+    - Check that the the model output is correct
 ```bash
 pytest tests/test_1.py -s -vv
 ```
 
 ---
 
-## 2. Taking the past into account  (`HeadVer1` & `GPTVer2`)
-
+## 2. N-gram Language Model (For Loops)  (`HeadVer1` & `GPTVer2`)
+1. **Take the previous tokens into account with the mean**
+    1. Using for loops, return the mean of the context in the model head
+    2. Create the logits via the token embeddings, the model head, and a linear projection layer
+2. Files to Edit
+    1. head_v1.py
+    2. gpt_v2.py
+3. Test Cases
+    1. Check that the model head returns the mean of the previous context
+    2. Check that the model output is correct
 ```bash
 pytest tests/test_2.py -s -vv
 ```
 
 ---
 
-## 3. Matrix multiplication instead of for loops (`HeadVer2`)
+## 3. N-gram Language Model (Tensor Multiplications) (`HeadVer2`)
+1. **Calculate the mean of the context with tensor multiplications**
+    1. Create a triangular mask for autoregressive training
+    2. Divide by sum for calculating the proportion for each token
+    3. Tensor multiplication with x to calculate the mean
+2. Files to Edit
+    - head_v2.py
+3. Test Cases
+    1. Check that the means from HeadVer1 and HeadVer2 are the same
+    2. Check that the time taken for calculating the mean for HeaVer2 is smaller than HeadVer1
 
 ```bash
 pytest tests/test_3.py -s -vv
@@ -30,7 +47,20 @@ pytest tests/test_3.py -s -vv
 
 ---
 
-## 4. Masking & Normalization (`HeadVer3`)
+## 4. Masking & Softmax (`HeadVer3`)
+1. **Calculate the attention score via masking and softmax**
+    1. Create a triangular mast for autoregressitve training
+    2. Converts 0s with '-inf'
+    3. Calculate the softmax for each context
+    4. Matrix multiplication with x
+2. Files to Edit
+    - head_v3.py
+3. Test Cases
+    1. Check that the means from HeadVer1 and HeadVer3 are the same (allclose)
+    2. Check that the speed for calculating HeavVer3 is faster than HeadVer1
+    3. Check that the logits are properly normalized
+    4. Check that the logits are properly masked
+
 
 ```bash
 pytest tests/test_4.py -s -vv
@@ -39,7 +69,17 @@ pytest tests/test_4.py -s -vv
 ---
 
 ## 5. Self-attention mechanism (`HeadVer4` & `GPTVer2`)
-
+1. **Implement Self-Attention**
+    1. Calculate the attention weights via a dot product with q and k with the scale C
+    2. Apply softmax
+    3. Tensor multiplication with v
+2. Files to Edit
+    - head_v4.py
+3. Test Cases
+    1. Check that the attention scores of two tensors that are in different order are the same.
+    2. Check that the outputs are properly masked
+    3. Check that the outputs are properly normalized
+    4. Check that the the model output is correct
 ```bash
 pytest tests/test_5.py -s -vv
 ```
@@ -47,7 +87,20 @@ pytest tests/test_5.py -s -vv
 ---
 
 ## 6. Positional encodings (`GPTVer3`)
-
+1. ***Imlement Positional Encoding**
+    1. Positional Encoding
+    2. Logits
+        1. Get the token embeddings
+        2. Add the embeddings with the positional encoding
+        3. Run the output through the attention head
+        4. Run the output through the model head
+2. Files to Edit
+    - gpt_v3.py
+3. Test Cases
+    1. Check that the orders are preserved
+    2. Check that the positional difference stays constant
+    3. Check that the orders are preserved in the logits
+    4. Check that the the model output is correct
 ```bash
 pytest tests/test_6.py -s -vv
 ```
@@ -64,21 +117,21 @@ pytest tests/test_7.py -s -vv
 
 <img src='img/Multi-Head Attention.png' width=250>
 
-Week1에서 구현했던 `HeadVer4`(self-attention head)를 바탕으로 multi-head attention을 구현합니다.
-self-attention head에서 Q, K, V가 각각 FC layer를 통과하고나면 (batch_size, block_size, embed_size) → (batch_size, block_size, head_size)로 shape이 변경이 됩니다.
-그리고 embed_size = head_size * n_heads의 관계가 성립합니다.
+Based on the `HeadVer4` (self-attention head) implemented in Week1, we will implement multi-head attention.  
+After passing through the FC layers, Q, K, and V in the self-attention head change shape from (batch_size, block_size, embed_size) → (batch_size, block_size, head_size)  
+And the relationship embed_size = head_size * n_heads holds.
 
-> TODO 1: `MultiHeaVer1.forward`를 구현해주세요.
-> input x를 n_heads 개의 self-attention head를 통과한 후 head_output을 concatnate합니다. 그리고 projection layer(FC)를 통과시켜 multi-head attention을 구현해주세요.
+> TODO 1: Implement `MultiHeadVer1.forward`.
+> Pass the input x through n_heads self-attention heads and then concatenate the head outputs. Finally, pass the concatenated output through a projection layer (FC) to implement multi-head attention.
 
-테스트를 돌려보고 다음의 질문에 답해주세요.
-1. `MultiHeadVer1`와 `HeadVer4`의 연산량에 차이가 있나요? 없다면 왜?
-2. `MultiHeadVer1`와 `HeadVer4` 중 어떤 것이 더 좋은 성능을 보이나요? 그 이유는 무엇인가요?
+Please run the tests and answer the following questions:
+1. Is there a difference in computational cost between `MultiHeadVer1` and `HeadVer4`? If not, why?
+2. Which one performs better, `MultiHeadVer1` or `HeadVer4`? Why?
 
 ### test_multi_head_ver_2_is_faster_than_ver_1 & test_multi_head_ver_1_and_multi_head_ver_2_are_logically_equal
 
-테스트를 돌려보고 다음의 질문에 답해주세요.
-1. `MultiHeadVer2`와 `MultiHeadVer1`는 알고리즘에 차이는 없지만 `MultiHeadVer2`가 연산 속도가 더 빠릅니다. 그 이유는 무엇인가요?
+Please run the tests and answer the following questions:
+1. `MultiHeadVer2` and `MultiHeadVer1` have no difference in algorithm, but `MultiHeadVer2` is faster in computation. Why is that?
 ---
 
 ## 8. Feed forward network & Residual connections (`MultiHeadVer2`)
@@ -91,28 +144,31 @@ pytest tests/test_8.py -s -vv
 
 <img src='img/BlockVer1.png' width=250>
 
-`BlockVer1`은 위에서 구현한 Multi-Head Attention과 FeedForward를 수행합니다.
+`BlockVer1` performs Multi-Head Attention and FeedForward as implemented above.  
 
-> TODO 2-1: `FeedForward`를 구현해주세요. $FFNN(x)=Max(0, W_1x+b_1)W_2 + b_2$  
-> ($W_1$의 shape은 (embed_size, 4 $\times$ embed_size), $W_2$의 shape은 (4 $\times$ embed_size, embed_size) 입니다.)
+> TODO 1: Implement the `FeedForward`
+>     1. $FFNN(x)=Max(0, W_1x+b_1)W_2 + b_2$
+>     2. $W_1$ has shape (embed_size, 4 $\times$ embed_size), $W_2$ has shape (4 $\times$ embed_size, embed_size).  
 
-> TODO 2-2: `BlockVer1.forward`을 구현해주세요. Multi-Head Attention을 통과한 뒤 FeedForward layer를 통과시키면 됩니다.
+> TODO 2: Implement `BlockVer1.forward`
+>    1. It should pass through Multi-Head Attention and then through the FeedForward layer.  
 
-테스트를 돌려보고 다음의 질문에 답해주세요.
-1. `MultiHeadVer2`와  `BlockVer1` 중 어떤 것이 더 좋은 성능을 보이나요? 그 이유는 무엇인가요?
+Please run the tests and answer the following questions:  
+1. Which one performs better, `MultiHeadVer2` or `BlockVer1`? Why?
 
 
 ### test_residual_conn_helps_when_network_is_deep
 
 <img src='img/BlockVer2.png' width=250>
 
-`BlockVer2`는 BlockVer1에서 Residual connection을 추가한 Block입니다.
+`BlockVer2` is a block that adds residual connection to `BlockVer1`.  
 
-> TODO 2-3: `BlockVer2.forward`를 구현해주세요. Multi-Head Attention과 FeedForward에 대해 각각 residual Connection을 추가하면 됩니다.
+> TOdO 3: Implement `BlockVer2.forward`
+>   1. You should add a residual connection to each of Multi-Head Attention and FeedForward.
 
 
-테스트를 돌려보고 다음의 질문에 답해주세요.
-1. `BlockVer1`과 `BlockVer2` 중 어떤 것이 더 좋은 성능을 보이나요? 그 이유는 무엇인가요?
+Please run the tests and answer the following questions:
+1. Which one performs better, `BlockVer1` or `BlockVer2`? Why?
 
 ---
 
@@ -125,20 +181,20 @@ pytest tests/test_9.py -s -vv
 ### test_layer_norm_features_dim_is_properly_normalized & test_layer_norm_mitigates_vanishing_gradient
 
 
-> TODO 3-1: `BlockVer3`에서 사용할 `LayerNorm`을 구현해주세요.
+> TODO 1: Please implement `LayerNorm` to be used in `BlockVer3`.
 
-테스트를 돌려보고 다음의 질문에 답해주세요.
-1. `LayerNorm`을 통과한 후에는 어떤 특징이 있나요?
-2. `LayerNorm`은 어떻게 기울기 소실 문제를 완화하나요?
+Please run the tests and answer the following questions:
+1. What are the characteristics after passing through `LayerNorm`?
+2. How does `LayerNorm` alleviate the vanishing gradient problem?
 
 ### test_layer_norm_helps_when_network_is_deep
 
 <img src='img/BlockVer3.png' width=250>
 
-> TODO 3-2: `BlockVer3.forward`를 구현해주세요. LayerNorm을 위의 그림처럼 Multi-Head의 input, FeedForward의 input 총 2곳에 추가하시면 됩니다.
+> TODO 2: Implement `BlockVer3.forward`. Add `LayerNorm` to the inputs of Multi-Head and FeedForward as shown in the figure above.
 
-테스트를 돌려보고 다음의 질문에 답해주세요.
-1. `BlockVer2`와 `BlockVer3` 중 어떤 것이 더 좋은 성능을 보이나요? 그 이유는 무엇인가요?
+Please run the tests and answer the following questions:
+1. Which one performs better, `BlockVer2` or `BlockVer3`? Why?
 
 --- 
 
@@ -151,14 +207,14 @@ pytest tests/test_10.py -s -vv
 
 <img src='img/BlockVer4.png' width=250>
 
-> TODO 4: `BlockVer4.forward`를 구현해주세요. Dropout layer를 추가하면됩니다. Dropout은 Multi-Head의 output, FeedForward의 output 총 2곳에 추가하시면 됩니다.
+> TODO 4: Please implement `BlockVer4.forward`. You should add a dropout layer to the outputs of Multi-Head and FeedForward, a total of 2 places.
 
-테스트를 돌려보고 다음의 질문에 답해주세요.
-1. 왜 학습 모드 일 때 `BlockVer4`의 출력은 항상 다를까요?
-2. 왜 평가 모드 일 때 `BlockVer4`의 출력은 항상 같을까요?
+Please run the tests and answer the following questions:
+1. Why is the output of `BlockVer4` always different in training mode?
+2. Why is the output of `BlockVer4` always the same in evaluation mode?
 
 ### test_dropout_helps
 
-테스트를 돌려보고 다음의 질문에 답해주세요.
-1. `BlockVer3`와 `BlockVer4` 중 어떤 것이 더 좋은 성능을 보이나요? 그 이유는 무엇인가요?
+Please run the tests and answer the following questions:
+1. Which one performs better, `BlockVer3` or `BlockVer4`? Why?
 
