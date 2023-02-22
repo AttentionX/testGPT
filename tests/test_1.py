@@ -3,7 +3,7 @@ implement  BigramLMVer1.logits()  method
 and run this test with `pytest test_1.py -s --verbose`
 """
 import torch
-from ..src import GPTVer1
+from learngpt import GPTVer1
 from .conftest import config, train, generate
 
 

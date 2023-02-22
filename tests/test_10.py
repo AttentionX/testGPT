@@ -2,11 +2,11 @@
 running question: why do we need Dropout?
 """
 import torch
-from ..src.block_v4 import BlockVer4
-from ..src.block_v3 import BlockVer3
-from ..src.multi_head_v2 import MultiHeadVer2
-from ..src.multi_head_v1 import MultiHeadVer1
-from ..src.gpt_v4 import GPTVer4
+from learngpt.block_v4 import BlockVer4
+from learngpt.block_v3 import BlockVer3
+from learngpt.multi_head_v2 import MultiHeadVer2
+from learngpt.multi_head_v1 import MultiHeadVer1
+from learngpt.gpt_v4 import GPTVer4
 from .conftest import config, train
 
 

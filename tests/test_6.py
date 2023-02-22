@@ -3,7 +3,7 @@ check if ver_1, ver_2, ver_3 preserves order.
 """
 import torch
 from .conftest import config, train, generate
-from ..src import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
+from learngpt import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
 
 
 def test_gpt_v1_logits_order_is_not_preserved():
