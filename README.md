@@ -15,9 +15,9 @@ def test_gpt_v1_generates_text_given_a_context():
 
 ```
 
-Korean  | English |
---- |---------|
-... | ...     |
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
 
 
 # Test 2
@@ -47,10 +47,9 @@ def test_gpt_v2_and_head_v1_generates_text_given_a_context():
 
 ```
 
-Korean  | English |
---- | --- |
-... | ... |
-
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
 
 # Test 3
 
@@ -75,10 +74,9 @@ def test_head_v2_faster_than_head_v1():
     assert time_taken_v2 < time_taken_v1
 ```
 
-Korean  | English |
---- | --- |
-... | ... |
-
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
 
 
 # Test 4
@@ -128,9 +126,9 @@ def test_head_v3_logits_are_properly_masked():
     assert torch.allclose(expected, was)
 ```
 
-Korean | English |
---- | --- |
-... | ... |
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
 
 
 
@@ -197,9 +195,9 @@ def test_gpt_v2_and_head_v4_generates_text_given_a_context():
     assert expected == was
 ```
 
-Korean | English |
---- | --- |
-... | ... |
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
 
 
 # Test 6
@@ -268,9 +266,9 @@ def test_gpt_v3_and_head_v4_generates_text_given_a_context():
 
 ```
 
-Korean | English |
---- | --- |
-... | ... |
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
 
 
 # Test 7
@@ -344,9 +342,9 @@ def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_equal():
 ```
 
 
-Korean | English |
---- | --- |
-... | ... |
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
 
 
 
@@ -384,9 +382,9 @@ def test_residual_conn_helps_when_network_is_deep():
 ```
 
 
-Korean | English |
---- | --- |
-... | ... |
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
 
 
 
@@ -450,9 +448,10 @@ def test_layer_norm_helps_when_network_is_deep():
 
 
 
-Korean | English |
---- | --- |
-... | ... |
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
+
 
 
 
@@ -515,9 +514,10 @@ def test_dropout_helps():
 
 ```
 
-Korean | English |
---- | --- |
-... | ... |
+Karpathy | Us (Korean)  | Us (English) |
+--- |---------| --- |
+... | ...     | ... | 
+
 
 
 
