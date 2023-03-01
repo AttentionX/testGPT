@@ -4,7 +4,7 @@ from learngpt import HeadVer1, HeadVer2
 
 
 # --- testing v2 --- #
-def test_head_v2_logically_the_same_as_head_v2():
+def test_head_v2_logically_the_same_as_head_v1():
     x = torch.Tensor([[[1, 2, 3],
                        [4, 5, 6],
                        [7, 8, 9]]])
