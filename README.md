@@ -6,12 +6,16 @@
 
 ```python3
 def test_gpt_v1_generates_text_given_a_context():
-    torch.manual_seed(1337)
+    """
+    Note how gpt v1 ends the sentence rather abruptly.
+    """
+    seed_everything(1337)
     lm = GPTVer1(config['vocab_size'], config['block_size'])
     train(lm)
     was = generate(lm, "The quick brown fox jumps over the lazy", 30)
-    expected = "The quick brown fox jumps over the lazy:\nHAGdirdo sick's q-Whe,\n\nANs "
+    expected = "The quick brown fox jumps over the lazy:\nHAGdirdo sick's q-etcichors "
     assert expected == was
+
 
 ```
 
@@ -37,13 +41,15 @@ def test_head_v1_takes_an_average_of_the_past_into_account():
 
 
 def test_gpt_v2_and_head_v1_generates_text_given_a_context():
-    torch.manual_seed(1337)
+    seed_everything(1337)
     head = HeadVer1()
-    lm = GPTVer2(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    V, T, C = config['vocab_size'], config['block_size'], config['embed_size']
+    lm = GPTVer2(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazyvee\nd ont phour teo, nwch aydo"
+    expected = "The quick brown fox jumps over the lazydF o'\nt owdihsrn he\nd odt phou"
     was = generate(lm, "The quick brown fox jumps over the lazy", 30)
     assert expected == was
+
 
 ```
 
@@ -54,7 +60,7 @@ Karpathy | Us (Korean)  | Us (English) |
 # Test 3
 
 ```python
-def test_head_v2_logically_the_same_as_head_v2():
+def test_head_v2_and_head_v1_are_logically_identical():
     x = torch.Tensor([[[1, 2, 3],
                        [4, 5, 6],
                        [7, 8, 9]]])
@@ -72,6 +78,7 @@ def test_head_v2_faster_than_head_v1():
     time_taken_v1 = timeit.timeit(lambda: head_v1(x), number=10)
     time_taken_v2 = timeit.timeit(lambda: head_v2(x), number=10)
     assert time_taken_v2 < time_taken_v1
+
 ```
 
 Karpathy | Us (Korean)  | Us (English) |
@@ -82,7 +89,7 @@ Karpathy | Us (Korean)  | Us (English) |
 # Test 4
 
 ```python
-def test_head_v3_logically_the_same_as_head_v1():
+def test_head_v3_and_head_v1_are_logically_identical():
     x = torch.Tensor([[[1, 2, 3],
                        [4, 5, 6],
                        [7, 8, 9]]])
@@ -124,6 +131,7 @@ def test_head_v3_logits_are_properly_masked():
     expected = torch.ones(B, T)
     was = head.wei.sum(dim=-1)
     assert torch.allclose(expected, was)
+
 ```
 
 Karpathy | Us (Korean)  | Us (English) |
@@ -186,13 +194,15 @@ def test_head_v4_the_variance_of_wei_after_scale_is_1():
 
 
 def test_gpt_v2_and_head_v4_generates_text_given_a_context():
-    torch.manual_seed(1337)
-    head = HeadVer4(config['block_size'], config['embed_size'], config['head_size'])
-    lm = GPTVer2(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    seed_everything(1337)
+    V, T, C = config['vocab_size'], config['block_size'], config['embed_size']
+    head = HeadVer4(T, C, C)
+    lm = GPTVer2(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazyor th manot utou s l spaif ant"
+    expected = "The quick brown fox jumps over the lazyon ano cmin he stesfveeman eco"
     was = generate(lm, "The quick brown fox jumps over the lazy", 30)
     assert expected == was
+
 ```
 
 Karpathy | Us (Korean)  | Us (English) |
@@ -203,6 +213,7 @@ Karpathy | Us (Korean)  | Us (English) |
 # Test 6
 
 ```python
+
 def test_gpt_v1_logits_order_is_not_preserved():
     x = torch.IntTensor([[7, 7, 7, 7]])  # (B, T)
     _, T = x.shape
@@ -256,13 +267,16 @@ def test_gpt_v3_logits_order_is_preserved():
 
 
 def test_gpt_v3_and_head_v4_generates_text_given_a_context():
-    torch.manual_seed(1337)
-    head = HeadVer4(config['block_size'], config['embed_size'], config['head_size'])
-    lm = GPTVer3(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    seed_everything(1337)
+    V, T, C = config['vocab_size'], config['embed_size'], config['block_size']
+    head = HeadVer4(T, C, C)
+    lm = GPTVer3(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazy stt, manot utou st the if ant"
+    expected = "The quick brown fox jumps over the lazyatweou fedothtotoutho,\nI- Iowh"
     was = generate(lm, "The quick brown fox jumps over the lazy", 30)
     assert expected == was
+
+
 
 ```
 
@@ -290,18 +304,18 @@ def test_multi_head_helps():
     """
     But multi-head leads to faster convergence than single head.
     """
-    torch.manual_seed(1337)
-    T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
+    seed_everything(1337)
+    V, T, C, n_heads = config['vocab_size'], config['block_size'], config['embed_size'], config['n_heads']
     # --- HeadVer4: single-head --- #
     contextualizer = HeadVer4(T, C, C)
-    gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
+    gpt = GPTVer4(contextualizer, V, T, C)
     losses_1 = train(gpt)
     # --- MultiHeadVer4: multi-head --- #
     contextualizer = MultiHeadVer1(T, C, n_heads)
-    gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
+    gpt = GPTVer4(contextualizer, V, T, C)
     losses_multi = train(gpt)
     # gpt should perform better with multi-head
-    assert losses_1['train'] > losses_multi['train']
+    assert losses_1['val'] > losses_multi['val']
 
 
 def test_multi_head_ver_2_is_faster_than_ver_1():
@@ -318,9 +332,9 @@ def test_multi_head_ver_2_is_faster_than_ver_1():
     assert time_taken_v2 < time_taken_v1
 
 
-def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_equal():
+def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_identical():
     """
-    And they are logically equal.
+    And they are logically identical.
     """
     B, T, C = 1, 3, 8
     n_heads = 4
@@ -339,6 +353,11 @@ def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_equal():
     out_2 = multi_head_v2(x)
     assert torch.allclose(out_1, out_2)
 
+
+
+
+
+
 ```
 
 
@@ -352,7 +371,7 @@ Karpathy | Us (Korean)  | Us (English) |
 
 ```python
 def test_ffn_helps():
-    torch.manual_seed(1337)
+    seed_everything(1337)
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- MultiHeadVer2: multi-head --- #
     contextualizer = MultiHeadVer2(T, C, n_heads)
@@ -362,11 +381,11 @@ def test_ffn_helps():
     contextualizer = BlockVer1(MultiHeadVer2(T, C, n_heads), C)
     gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_2 = train(gpt)
-    assert losses_1['train'] > losses_2['train']
+    assert losses_1['val'] > losses_2['val']
 
 
 def test_residual_conn_helps_when_network_is_deep():
-    torch.manual_seed(1337)
+    seed_everything(1337)
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- Layers of BlockVer1: multi-head + ffn --- #
     contextualizer = torch.nn.Sequential(*[BlockVer1(MultiHeadVer2(T, C, n_heads), C) for _ in range(config['n_layers'])])
@@ -377,7 +396,8 @@ def test_residual_conn_helps_when_network_is_deep():
     gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_2 = train(gpt)
     # gpt should perform better with multi-head
-    assert losses_1['train'] > losses_2['train']
+    assert losses_1['val'] > losses_2['val']
+
 
 ```
 
@@ -430,7 +450,7 @@ def test_layer_norm_mitigates_vanishing_gradient():
 
 # test: gpt v4 learns faster with LayerNorm
 def test_layer_norm_helps_when_network_is_deep():
-    torch.manual_seed(1337)
+    seed_everything(1337)
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- layers of BlockVer2: multi-head + ffn + residual --- #
     contextualizer = torch.nn.Sequential(
@@ -442,7 +462,8 @@ def test_layer_norm_helps_when_network_is_deep():
         *[BlockVer3(MultiHeadVer2(T, C, n_heads), C) for _ in range(config['n_layers'])])
     gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_2 = train(gpt)
-    assert losses_1['train'] > losses_2['train']
+    assert losses_1['val'] > losses_2['val']
+
 
 ```
 
@@ -492,12 +513,12 @@ def test_block_ver_4_output_is_always_the_same_in_eval_mode():
 
 def test_dropout_helps():
     """
-    dropout mitigates overfitting
+    dropout mitigates overfitting.
     """
-    torch.manual_seed(1337)
+    seed_everything(1337)
     T, C, n_heads, dropout = config['block_size'], config['embed_size'], config['n_heads'], config['dropout']
     # push the model to overfit
-    config['max_iters'] = 10000
+    config['max_iters'] = 7500
     config['learning_rate'] = 0.01
     # --- BlockVer3: layers of multi-head + ffn + residual + layer norm --- #
     contextualizer = BlockVer3(MultiHeadVer2(T, C, n_heads), C)

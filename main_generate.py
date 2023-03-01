@@ -1,7 +1,7 @@
 import torch
-from learngpt.gpt_v4 import GPTVer4
-from learngpt.block_v4 import BlockVer4
-from learngpt.multi_head_v2 import MultiHeadVer2
+from testgpt.gpt_v4 import GPTVer4
+from testgpt.block_v4 import BlockVer4
+from testgpt.multi_head_v2 import MultiHeadVer2
 from tests.conftest import generate, train, config
 
 torch.manual_seed(1337)

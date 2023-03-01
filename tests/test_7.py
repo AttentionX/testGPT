@@ -3,11 +3,11 @@ Running question: why do we need more than one head?
 """
 import timeit
 import torch
-from learngpt.multi_head_v1 import MultiHeadVer1
-from learngpt.multi_head_v2 import MultiHeadVer2
-from learngpt.head_v4 import HeadVer4
-from learngpt.gpt_v4 import GPTVer4
-from .conftest import config, train
+from testgpt.multi_head_v1 import MultiHeadVer1
+from testgpt.multi_head_v2 import MultiHeadVer2
+from testgpt.head_v4 import HeadVer4
+from testgpt.gpt_v4 import GPTVer4
+from .conftest import config, train, seed_everything
 
 
 def test_head_ver_4_and_multi_head_ver_1_are_equally_expensive():
@@ -26,18 +26,18 @@ def test_multi_head_helps():
     """
     But multi-head leads to faster convergence than single head.
     """
-    torch.manual_seed(1337)
-    T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
+    seed_everything(1337)
+    V, T, C, n_heads = config['vocab_size'], config['block_size'], config['embed_size'], config['n_heads']
     # --- HeadVer4: single-head --- #
     contextualizer = HeadVer4(T, C, C)
-    gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
+    gpt = GPTVer4(contextualizer, V, T, C)
     losses_1 = train(gpt)
     # --- MultiHeadVer4: multi-head --- #
     contextualizer = MultiHeadVer1(T, C, n_heads)
-    gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
+    gpt = GPTVer4(contextualizer, V, T, C)
     losses_multi = train(gpt)
     # gpt should perform better with multi-head
-    assert losses_1['train'] > losses_multi['train']
+    assert losses_1['val'] > losses_multi['val']
 
 
 def test_multi_head_ver_2_is_faster_than_ver_1():
@@ -54,9 +54,9 @@ def test_multi_head_ver_2_is_faster_than_ver_1():
     assert time_taken_v2 < time_taken_v1
 
 
-def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_equal():
+def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_identical():
     """
-    And they are logically equal.
+    And they are logically identical.
     """
     B, T, C = 1, 3, 8
     n_heads = 4

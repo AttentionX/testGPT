@@ -1,6 +1,6 @@
 import torch
-from learngpt import HeadVer1, GPTVer2
-from .conftest import train, generate, config
+from testgpt import HeadVer1, GPTVer2
+from .conftest import train, generate, config, seed_everything
 
 
 def test_head_v1_takes_an_average_of_the_past_into_account():
@@ -16,10 +16,11 @@ def test_head_v1_takes_an_average_of_the_past_into_account():
 
 
 def test_gpt_v2_and_head_v1_generates_text_given_a_context():
-    torch.manual_seed(1337)
+    seed_everything(1337)
     head = HeadVer1()
-    lm = GPTVer2(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    V, T, C = config['vocab_size'], config['block_size'], config['embed_size']
+    lm = GPTVer2(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazyvee\nd ont phour teo, nwch aydo"
+    expected = "The quick brown fox jumps over the lazydF o'\nt owdihsrn he\nd odt phou"
     was = generate(lm, "The quick brown fox jumps over the lazy", 30)
     assert expected == was

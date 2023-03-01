@@ -7,7 +7,7 @@ from .head_v1 import HeadVer1
 class GPTVer2(GPTVer1):
 
     def __init__(self, contextualizer: Union[HeadVer1, torch.nn.Module],
-                 vocab_size: int, embed_size: int, block_size: int):
+                 vocab_size: int, block_size: int, embed_size: int):
         super().__init__(vocab_size, block_size)
         # each token directly reads off the logits for the next token from a lookup table
         self.contextualizer = contextualizer

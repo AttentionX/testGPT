@@ -1,10 +1,9 @@
 import os
 from pathlib import Path
-from typing import Union
+import random
 import torch
 import yaml
-from learngpt.gpt_v3 import GPTVer3
-from learngpt.gpt_v4 import GPTVer4
+import numpy as np
 
 # --- load config --- #
 with open(Path(__file__).resolve().parent / "config.yaml", 'r') as f:
@@ -87,3 +86,14 @@ def generate(lm: torch.nn.Module, context: str, max_new_tokens: int) -> str:
     completion = lm.generate(context, max_new_tokens)
     completion = decode(completion.squeeze().tolist())
     return completion
+
+
+def seed_everything(seed: int):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False

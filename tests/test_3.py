@@ -1,10 +1,10 @@
 import timeit
 import torch
-from learngpt import HeadVer1, HeadVer2
+from testgpt import HeadVer1, HeadVer2
 
 
 # --- testing v2 --- #
-def test_head_v2_logically_the_same_as_head_v1():
+def test_head_v2_and_head_v1_are_logically_identical():
     x = torch.Tensor([[[1, 2, 3],
                        [4, 5, 6],
                        [7, 8, 9]]])

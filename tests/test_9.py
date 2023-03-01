@@ -2,12 +2,12 @@
 running question: why do we need LayerNorm?
 """
 import torch
-from learngpt.gpt_v4 import GPTVer4
-from learngpt.layer_normalization import LayerNorm
-from learngpt.block_v2 import BlockVer2
-from learngpt.block_v3 import BlockVer3
-from learngpt.multi_head_v2 import MultiHeadVer2
-from .conftest import config, train
+from testgpt.gpt_v4 import GPTVer4
+from testgpt.layer_normalization import LayerNorm
+from testgpt.block_v2 import BlockVer2
+from testgpt.block_v3 import BlockVer3
+from testgpt.multi_head_v2 import MultiHeadVer2
+from .conftest import config, train, seed_everything
 
 
 def test_layer_norm_features_dim_is_properly_normalized():
@@ -48,7 +48,7 @@ def test_layer_norm_mitigates_vanishing_gradient():
 
 # test: gpt v4 learns faster with LayerNorm
 def test_layer_norm_helps_when_network_is_deep():
-    torch.manual_seed(1337)
+    seed_everything(1337)
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- layers of BlockVer2: multi-head + ffn + residual --- #
     contextualizer = torch.nn.Sequential(
@@ -60,4 +60,4 @@ def test_layer_norm_helps_when_network_is_deep():
         *[BlockVer3(MultiHeadVer2(T, C, n_heads), C) for _ in range(config['n_layers'])])
     gpt = GPTVer4(contextualizer, config['vocab_size'], T, C)
     losses_2 = train(gpt)
-    assert losses_1['train'] > losses_2['train']
+    assert losses_1['val'] > losses_2['val']

@@ -2,8 +2,8 @@
 check if ver_1, ver_2, ver_3 preserves order.
 """
 import torch
-from .conftest import config, train, generate
-from learngpt import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
+from .conftest import config, train, generate, seed_everything
+from testgpt import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
 
 
 def test_gpt_v1_logits_order_is_not_preserved():
@@ -59,11 +59,12 @@ def test_gpt_v3_logits_order_is_preserved():
 
 
 def test_gpt_v3_and_head_v4_generates_text_given_a_context():
-    torch.manual_seed(1337)
-    head = HeadVer4(config['block_size'], config['embed_size'], config['head_size'])
-    lm = GPTVer3(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    seed_everything(1337)
+    V, T, C = config['vocab_size'], config['embed_size'], config['block_size']
+    head = HeadVer4(T, C, C)
+    lm = GPTVer3(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazy stt, manot utou st the if ant"
+    expected = "The quick brown fox jumps over the lazyatweou fedothtotoutho,\nI- Iowh"
     was = generate(lm, "The quick brown fox jumps over the lazy", 30)
     assert expected == was
 

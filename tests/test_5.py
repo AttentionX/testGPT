@@ -1,6 +1,6 @@
 import torch
-from learngpt import HeadVer4, GPTVer2
-from .conftest import config, train, generate
+from testgpt import HeadVer4, GPTVer2
+from .conftest import config, train, generate, seed_everything
 
 
 def test_head_v4_attention_has_no_notion_of_space():
@@ -54,10 +54,11 @@ def test_head_v4_the_variance_of_wei_after_scale_is_1():
 
 
 def test_gpt_v2_and_head_v4_generates_text_given_a_context():
-    torch.manual_seed(1337)
-    head = HeadVer4(config['block_size'], config['embed_size'], config['head_size'])
-    lm = GPTVer2(head, config['vocab_size'], config['embed_size'], config['block_size'])
+    seed_everything(1337)
+    V, T, C = config['vocab_size'], config['block_size'], config['embed_size']
+    head = HeadVer4(T, C, C)
+    lm = GPTVer2(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazyor th manot utou s l spaif ant"
+    expected = "The quick brown fox jumps over the lazyon ano cmin he stesfveeman eco"
     was = generate(lm, "The quick brown fox jumps over the lazy", 30)
     assert expected == was

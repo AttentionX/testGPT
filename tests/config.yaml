@@ -6,7 +6,7 @@ eval_iters: 200
 eval_interval: 500
 learning_rate: 0.001
 embed_size: 16
-n_layers: 5
+n_layers: 10
 n_heads: 8
 dropout: 0.05
 

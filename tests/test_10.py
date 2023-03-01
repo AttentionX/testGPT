@@ -2,12 +2,12 @@
 running question: why do we need Dropout?
 """
 import torch
-from learngpt.block_v4 import BlockVer4
-from learngpt.block_v3 import BlockVer3
-from learngpt.multi_head_v2 import MultiHeadVer2
-from learngpt.multi_head_v1 import MultiHeadVer1
-from learngpt.gpt_v4 import GPTVer4
-from .conftest import config, train
+from testgpt.block_v4 import BlockVer4
+from testgpt.block_v3 import BlockVer3
+from testgpt.multi_head_v2 import MultiHeadVer2
+from testgpt.multi_head_v1 import MultiHeadVer1
+from testgpt.gpt_v4 import GPTVer4
+from .conftest import config, train, seed_everything
 
 
 def test_block_ver_4_output_is_always_different_in_train_mode():
@@ -44,12 +44,12 @@ def test_block_ver_4_output_is_always_the_same_in_eval_mode():
 
 def test_dropout_helps():
     """
-    dropout mitigates overfitting
+    dropout mitigates overfitting.
     """
-    torch.manual_seed(1337)
+    seed_everything(1337)
     T, C, n_heads, dropout = config['block_size'], config['embed_size'], config['n_heads'], config['dropout']
     # push the model to overfit
-    config['max_iters'] = 10000
+    config['max_iters'] = 7500
     config['learning_rate'] = 0.01
     # --- BlockVer3: layers of multi-head + ffn + residual + layer norm --- #
     contextualizer = BlockVer3(MultiHeadVer2(T, C, n_heads), C)
