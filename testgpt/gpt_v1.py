@@ -12,10 +12,10 @@ class GPTVer1(nn.Module):
         self.token_embedding_table = nn.Embedding(vocab_size, vocab_size)
         self.block_size = block_size
 
-    def forward(self, idx: torch.Tensor, targets: Optional[torch.Tensor] = None) -> \
+    def forward(self, indices: torch.Tensor, targets: Optional[torch.Tensor] = None) -> \
             tuple[torch.Tensor, Optional[torch.Tensor]]:
         # idx and targets are both (B, T) tensor of integers
-        logits = self.logits(idx)  # (B, T) ->  (B, T, C)
+        logits = self.logits(indices)  # (B, T) ->  (B, T, C)
         if targets is None:
             loss = None
         else:
@@ -25,24 +25,26 @@ class GPTVer1(nn.Module):
             loss = F.cross_entropy(logits, targets)  # (B * T, C), (B * T) -> scalar
         return logits, loss
 
-    def logits(self, idx: torch.Tensor) -> torch.Tensor:
-        return self.token_embedding_table(idx)  # (B, T) ->  (B, T, C)
+    def logits(self, indices: torch.Tensor) -> torch.Tensor:
+        """
+        GPT v2 uses token embeddings as the logits.
+        """
+        return self.token_embedding_table(indices)  # (B, T) ->  (B, T, C)
 
     @torch.no_grad()
-    def generate(self, idx: torch.Tensor, max_new_tokens: int) -> torch.Tensor:
+    def generate(self, indices: torch.Tensor, max_new_tokens: int) -> torch.Tensor:
         # idx is (B, T) array of indices in the current context
         for _ in range(max_new_tokens):
             # --- TODO 1 --- #
             # get the predictions
-            last_idx = idx[:, -self.block_size:]  # (B, T + new) -> (B, T)
-            logits, _ = self(last_idx)  # just get the logits
+            logits, _ = self(indices[:, -1])  # (B, T + new) -> (B, 1) ->  (B, 1, C)
             # focus only on the last time step -> predict what comes next
-            logits = logits[:, -1, :]
+            logits = logits.squeeze(1)  # (B, 1, C) -> (B, C)
             # apply softmax to get probabilities
-            probs = F.softmax(logits, dim=-1)  # (B, C) # softmax
+            probs = F.softmax(logits, dim=-1)  # (B, C) --normalize over C-->  (B, C)
             # sample from the distribution
             idx_next = torch.multinomial(probs, num_samples=1)  # (B, 1) -> next idx sampling
             # append sampled index to the running sequence
-            idx = torch.cat((idx, idx_next), dim=1)  # (B, T + 1)
+            indices = torch.cat((indices, idx_next), dim=1)  # (B, T + 1)
             # -------------- #
-        return idx
+        return indices

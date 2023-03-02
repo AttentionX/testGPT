@@ -4,6 +4,9 @@ from .conftest import train, generate, config, seed_everything
 
 
 def test_head_v1_takes_an_average_of_the_past_into_account():
+    """
+    implement: TODO 2 - 1
+    """
     x = torch.Tensor([[[1, 2, 3],
                        [4, 5, 6],
                        [7, 8, 9]]])
@@ -16,6 +19,9 @@ def test_head_v1_takes_an_average_of_the_past_into_account():
 
 
 def test_gpt_v2_and_head_v1_generates_text_given_a_context():
+    """
+    implement: TODO 2 - 2
+    """
     seed_everything(1337)
     head = HeadVer1()
     V, T, C = config['vocab_size'], config['block_size'], config['embed_size']
