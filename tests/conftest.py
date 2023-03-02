@@ -1,9 +1,10 @@
 import os
-from pathlib import Path
 import random
 import torch
 import yaml
 import numpy as np
+from pathlib import Path
+from wandb.sdk.wandb_run import Run
 
 # --- load config --- #
 with open(Path(__file__).resolve().parent / "config.yaml", 'r') as f:
@@ -58,7 +59,7 @@ def estimate_loss(model: torch.nn.Module):
     return out
 
 
-def train(lm: torch.nn.Module) -> dict:
+def train(lm: torch.nn.Module, run: Run = None) -> dict:
     lm = lm.to(config['device'])
     # create a PyTorch optimizer
     optimizer = torch.optim.AdamW(lm.parameters(), lr=config['learning_rate'])
@@ -68,6 +69,12 @@ def train(lm: torch.nn.Module) -> dict:
         if i % config['eval_interval'] == 0:
             losses = estimate_loss(lm)
             print(f"step {i}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+            # --- log to wandb if a run instance is passed --- #
+            if run:
+                run.log({
+                     "train/loss": losses['train'],
+                     "val/loss": losses['val']
+                })
         # sample a batch of data
         xb, yb = get_batch('train')
         # evaluate the loss
