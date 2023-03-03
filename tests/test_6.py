@@ -59,12 +59,18 @@ def test_gpt_v3_logits_order_is_preserved():
 
 
 def test_gpt_v3_and_head_v4_generates_text_given_a_context():
+    """
+    with positional encodings added, gpt picks up Shakespearean pause (comma), so to speak.
+    e.g. We are accounted poor citizens, the patricians good.
+    e.g. Let us kill him, and we'll have corn at our own price.
+    e.g. I say unto you, what he hath done famously, he did
+    """
     seed_everything(1337)
     V, T, C = config['vocab_size'], config['embed_size'], config['block_size']
     head = HeadVer4(T, C, C)
     lm = GPTVer3(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazyatweou fedothtotoutho,\nI- Iowh"
-    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    was = generate(lm, "The ", 30)
+    expected = "The t weou fedothtotoutho,\nI- Iowh"
     assert expected == was
 

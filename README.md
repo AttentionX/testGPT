@@ -12,11 +12,9 @@ def test_gpt_v1_generates_text_given_a_context():
     seed_everything(1337)
     lm = GPTVer1(config['vocab_size'], config['block_size'])
     train(lm)
-    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
-    expected = "The quick brown fox jumps over the lazy:\nHAGdirdo sick's q-etcichors "
+    was = generate(lm, "The ", 30)
+    expected = "The \nSXro sick's q-etcichors "
     assert expected == was
-
-
 ```
 
 Karpathy | Us (Korean)  | Us (English) |
@@ -29,6 +27,9 @@ Karpathy | Us (Korean)  | Us (English) |
 ```python 
 
 def test_head_v1_takes_an_average_of_the_past_into_account():
+    """
+    implement: TODO 2 - 1
+    """
     x = torch.Tensor([[[1, 2, 3],
                        [4, 5, 6],
                        [7, 8, 9]]])
@@ -41,15 +42,17 @@ def test_head_v1_takes_an_average_of_the_past_into_account():
 
 
 def test_gpt_v2_and_head_v1_generates_text_given_a_context():
+    """
+    implement: TODO 2 - 2
+    """
     seed_everything(1337)
     head = HeadVer1()
     V, T, C = config['vocab_size'], config['block_size'], config['embed_size']
     lm = GPTVer2(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazydF o'\nt owdihsrn he\nd odt phou"
-    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    was = generate(lm, "The ", 30)
+    expected = "The oo rmnt oedi srnvhe\nd oy  phou"
     assert expected == was
-
 
 ```
 
@@ -199,8 +202,8 @@ def test_gpt_v2_and_head_v4_generates_text_given_a_context():
     head = HeadVer4(T, C, C)
     lm = GPTVer2(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazyon ano cmin he stesfveeman eco"
-    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    was = generate(lm, "The ", 30)
+    expected = "The st ano cmin he stesfveeman eco"
     assert expected == was
 
 ```
@@ -267,15 +270,20 @@ def test_gpt_v3_logits_order_is_preserved():
 
 
 def test_gpt_v3_and_head_v4_generates_text_given_a_context():
+    """
+    with positional encodings added, gpt picks up Shakespearean pause (comma), so to speak.
+    e.g. We are accounted poor citizens, the patricians good.
+    e.g. Let us kill him, and we'll have corn at our own price.
+    e.g. I say unto you, what he hath done famously, he did
+    """
     seed_everything(1337)
     V, T, C = config['vocab_size'], config['embed_size'], config['block_size']
     head = HeadVer4(T, C, C)
     lm = GPTVer3(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazyatweou fedothtotoutho,\nI- Iowh"
-    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    was = generate(lm, "The ", 30)
+    expected = "The t weou fedothtotoutho,\nI- Iowh"
     assert expected == was
-
 
 
 ```

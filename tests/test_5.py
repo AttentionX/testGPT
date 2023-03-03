@@ -59,6 +59,6 @@ def test_gpt_v2_and_head_v4_generates_text_given_a_context():
     head = HeadVer4(T, C, C)
     lm = GPTVer2(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazyon ano cmin he stesfveeman eco"
-    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    was = generate(lm, "The ", 30)
+    expected = "The st ano cmin he stesfveeman eco"
     assert expected == was

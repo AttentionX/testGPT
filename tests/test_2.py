@@ -27,6 +27,6 @@ def test_gpt_v2_and_head_v1_generates_text_given_a_context():
     V, T, C = config['vocab_size'], config['block_size'], config['embed_size']
     lm = GPTVer2(head, V, T, C)
     train(lm)  # may take a while
-    expected = "The quick brown fox jumps over the lazydF o'\nt owdihsrn he\nd odt phou"
-    was = generate(lm, "The quick brown fox jumps over the lazy", 30)
+    was = generate(lm, "The ", 30)
+    expected = "The oo rmnt oedi srnvhe\nd oy  phou"
     assert expected == was
