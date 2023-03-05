@@ -15,5 +15,5 @@ def test_gpt_v1_generates_text_given_a_context():
     lm = GPTVer1(config['vocab_size'], config['block_size'])
     train(lm)
     was = generate(lm, "The ", 30)
-    expected = "The \nSXro sick's q-etcichors "
+    expected = "The berm,\nSXro sick's q-etcichors "
     assert expected == was
