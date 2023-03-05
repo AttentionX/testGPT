@@ -25,7 +25,7 @@ class GPTVer2(GPTVer1):
         tok_emb = self.token_embedding_table(indices)  # (B, T) ->  (B, T, C)
         x = self.contextualizer(tok_emb)  # (B, T, C) ->  (B, T, C)
         logits = self.lm_head(x)  # (B, T, C) @ (B, T, |V|) -> (B, T, |V|)
-        # ------------- #
+        # -------------- #
         return logits
 
     @torch.no_grad()
