@@ -10,18 +10,6 @@ from testgpt.gpt_v4 import GPTVer4
 from .conftest import config, train, seed_everything
 
 
-def test_head_ver_4_and_multi_head_ver_1_are_equally_expensive():
-    """
-    trainable parameters of multi-head ver 1 and head ver 4 must be the same because
-    head_size = embed_size // n_heads
-    """
-    T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
-    multi_head_v1 = MultiHeadVer1(T, C, n_heads)
-    head_v4 = HeadVer4(T, C, C)
-    assert sum([p.numel() for p in multi_head_v1.heads.parameters() if p.requires_grad]) \
-           == sum([p.numel() for p in head_v4.parameters() if p.requires_grad])
-
-
 def test_multi_head_helps():
     """
     But multi-head leads to faster convergence than single head.
@@ -38,6 +26,18 @@ def test_multi_head_helps():
     losses_multi = train(gpt)
     # gpt should perform better with multi-head
     assert losses_1['val'] > losses_multi['val']
+
+
+def test_head_ver_4_and_multi_head_ver_1_are_equally_expensive():
+    """
+    trainable parameters of multi-head ver 1 and head ver 4 must be the same because
+    head_size = embed_size // n_heads
+    """
+    T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
+    multi_head_v1 = MultiHeadVer1(T, C, n_heads)
+    head_v4 = HeadVer4(T, C, C)
+    assert sum([p.numel() for p in multi_head_v1.heads.parameters() if p.requires_grad]) \
+           == sum([p.numel() for p in head_v4.parameters() if p.requires_grad])
 
 
 def test_multi_head_ver_2_is_faster_than_ver_1():
