@@ -2,6 +2,10 @@ import torch
 
 
 class FeedForward(torch.nn.Module):
+    """
+    (Vaswani et. al, pg. 5)
+    FFN(x) = max(0, xW1 + b1 )W2 + b2
+    """
     def __init__(self, embed_size: int):
         super().__init__()
         # --- TODO 2-1 --- #
