@@ -4,16 +4,6 @@ from testgpt import HeadVer4, GPTVer2
 from .conftest import config, train, generate, seed_everything
 
 
-def test_gpt_v2_and_head_v4_generates_text_given_a_context():
-    seed_everything(1337)
-    V, T, C = config['vocab_size'], config['block_size'], config['embed_size']
-    head = HeadVer4(T, C, C)
-    lm = GPTVer2(head, V, T, C)
-    train(lm)  # may take a while
-    was = generate(lm, "The ", 30)
-    assert editdistance.eval("The st ano cmin he stesfveeman eco", was) < 5
-
-
 def test_head_v4_attention_has_no_notion_of_space():
     """
     :return:
@@ -62,3 +52,13 @@ def test_head_v4_the_variance_of_wei_after_scale_is_1():
     head = HeadVer4(T, C, C)
     head(x, test=True)  # (B, T, C)
     assert 1 == torch.round(head.var)
+
+
+def test_gpt_v2_and_head_v4_generates_text_given_a_context():
+    seed_everything(1337)
+    V, T, C = config['vocab_size'], config['block_size'], config['embed_size']
+    head = HeadVer4(T, C, C)
+    lm = GPTVer2(head, V, T, C)
+    train(lm)  # may take a while
+    was = generate(lm, "The ", 30)
+    assert editdistance.eval("The st ano cmin he stesfveeman eco", was) < 5

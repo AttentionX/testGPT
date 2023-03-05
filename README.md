@@ -243,7 +243,7 @@ def test_gpt_v2_logits_order_is_not_preserved():
 
 def test_gpt_v3_pos_encodings_each_pos_is_different():
     T, C = 4, 512
-    encodings = GPTVer3.pos_encodings(T, C)
+    encodings = GPTVer3.pos_encodings_v4(T, C)
     assert not torch.allclose(encodings[0], encodings[1])
     assert not torch.allclose(encodings[1], encodings[2])
     assert not torch.allclose(encodings[2], encodings[3])
@@ -251,7 +251,7 @@ def test_gpt_v3_pos_encodings_each_pos_is_different():
 
 def test_gpt_v3_pos_encodings_dist_stays_constant():
     T, C = 10, 512
-    encodings = GPTVer3.pos_encodings(T, C)
+    encodings = GPTVer3.pos_encodings_v4(T, C)
     assert torch.allclose(torch.norm(encodings[2] - encodings[0]), torch.norm(encodings[3] - encodings[1]))
     assert torch.allclose(torch.norm(encodings[5] - encodings[3]), torch.norm(encodings[6] - encodings[4]))
     assert torch.allclose(torch.norm(encodings[7] - encodings[5]), torch.norm(encodings[8] - encodings[6]))
