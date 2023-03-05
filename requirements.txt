@@ -4,3 +4,4 @@ pyyaml==6.0
 matplotlib==3.6.3
 wandb==0.13.10
 streamlit==1.19.0
+editdistance==0.6.2

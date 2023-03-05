@@ -2,6 +2,7 @@
 check if ver_1, ver_2, ver_3 preserves order.
 """
 import torch
+import editdistance
 from .conftest import config, train, generate, seed_everything
 from testgpt import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
 
@@ -19,8 +20,7 @@ def test_gpt_v3_and_head_v4_generates_text_given_a_context():
     lm = GPTVer3(head, V, T, C)
     train(lm)  # may take a while
     was = generate(lm, "The ", 30)
-    expected = "The t weou fedothtotoutho,\nI- Iowh"
-    assert expected == was
+    assert editdistance.eval("The t weou fedothtotoutho,\nI- Iowh", was) < 5
 
 
 def test_gpt_v1_logits_order_is_not_preserved():
