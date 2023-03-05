@@ -10,6 +10,9 @@ from .conftest import config, train, seed_everything
 
 
 def test_ffn_helps():
+    """
+    GPT converges faster with ffn.
+    """
     seed_everything(1337)
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- MultiHeadVer2: multi-head --- #
@@ -24,6 +27,9 @@ def test_ffn_helps():
 
 
 def test_residual_conn_helps_when_network_is_deep():
+    """
+    Deep converges faster with residual connection.
+    """
     seed_everything(1337)
     T, C, n_heads = config['block_size'], config['embed_size'], config['n_heads']
     # --- Layers of BlockVer1: multi-head + ffn --- #
