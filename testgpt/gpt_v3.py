@@ -24,8 +24,7 @@ class GPTVer3(GPTVer2):
     @staticmethod
     def pos_encodings_v1(block_size: int, embed_size: int) -> torch.FloatTensor:
         """
-        dead-simple positional encoding.
-
+        PE(pos) = pos
         """
         # --- TODO 6 - 2 --- #
         encodings = torch.arange(block_size).unsqueeze(1).repeat(1, embed_size)  # (L) -> (L, 1) -> (L, C)
@@ -35,8 +34,7 @@ class GPTVer3(GPTVer2):
     @staticmethod
     def pos_encodings_v2(block_size: int, embed_size: int) -> torch.FloatTensor:
         """
-        a normalized version of v1.
-        but... time-delta is not constant across variable-length sentences.
+        PE(pos) = pos / max(pos)
         """
         # --- TODO 6 - 3 --- #
         encodings = GPTVer3.pos_encodings_v1(block_size, embed_size)  # (L, C)
@@ -56,7 +54,7 @@ class GPTVer3(GPTVer2):
         freqs = 0.0001 ** (torch.arange(embed_size) / embed_size).unsqueeze(0)  # (C) -> (1, C)
         # ---  PE(pos, i) = sin(freq(i) * pos) --- #
         positions = torch.arange(block_size).unsqueeze(1)  # (L) -> (L, 1)
-        encodings = torch.sin(positions * freqs)  # (L, 1) * (1, C) -> (L, C); multiply L across C
+        encodings = torch.sin(positions * freqs)  # (L, 1) * (1, C) -> (L, C); broadcast-multiply L across C
         return encodings
         # ------------------ #
 
@@ -75,9 +73,9 @@ class GPTVer3(GPTVer2):
         # --- PE(pos, 2i + 1) = cos(freq(2i) * pos) --- #
         positions = torch.arange(block_size).unsqueeze(1)  # -> (L, 1)
         encodings = torch.zeros(size=(block_size, embed_size))  # (L, C)
-        # evens = sin  (L, 1) * (1, C/2) ->  (L, C/2); multiply L across C/2
+        # evens = sin  (L, 1) * (1, C/2) ->  (L, C/2); broadcast-multiply L across C/2
         encodings[:, ::2] = torch.sin(positions * freqs)
-        # odds = cos  (L, 1) * (1, C/2) ->  (L, C/2); multiply L across C/2
+        # odds = cos  (L, 1) * (1, C/2) ->  (L, C/2); broadcast-multiply L across C/2
         encodings[:, 1::2] = torch.cos(positions * freqs)
         return encodings
         # ------------------ #

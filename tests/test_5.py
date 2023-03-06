@@ -1,5 +1,8 @@
+import pytest
 import torch
 import editdistance
+from torch.cuda import memory_usage
+
 from testgpt import HeadVer4, GPTVer2
 from .conftest import config, train, generate, seed_everything
 
