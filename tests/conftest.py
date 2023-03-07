@@ -24,9 +24,9 @@ char2idx = {ch: i for i, ch in enumerate(chars)}
 idx2char = {i: ch for i, ch in enumerate(chars)}
 encode = lambda s: [char2idx[c] for c in s]  # encoder: take a string, output a list of integers
 decode = lambda l: ''.join([idx2char[i] for i in l])  # decoder: take a list of integers, output a string
-# Train and test splits
+# train and test splits
 data = torch.tensor(encode(text), dtype=torch.long)
-n = int(0.9 * len(data))  # first 90% will be train, rest val
+n = int(config['train_ratio'] * len(data))
 train_data = data[:n]
 val_data = data[n:]
 
@@ -60,6 +60,8 @@ def estimate_loss(model: torch.nn.Module):
 
 
 def train(lm: torch.nn.Module, run: Run = None) -> dict:
+    print("\ntrain count:", len(train_data))
+    print("val count:", len(val_data))
     lm = lm.to(config['device'])
     # create a PyTorch optimizer
     optimizer = torch.optim.AdamW(lm.parameters(), lr=config['learning_rate'])
