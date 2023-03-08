@@ -49,7 +49,7 @@ pytest tests/test_3.py -s -vv
 
 ## 4. Masking & Softmax (`HeadVer3`)
 1. **Calculate the attention score via masking and softmax**
-    1. Create a triangular mast for autoregressitve training
+    1. Create a triangular mask for autoregressive training
     2. Converts 0s with '-inf'
     3. Calculate the softmax for each context
     4. Matrix multiplication with x
