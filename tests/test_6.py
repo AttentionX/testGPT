@@ -11,7 +11,7 @@ from testgpt import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
 
 
 def test_gpt_v1_and_v2_logits_order_is_not_preserved():
-    x = torch.IntTensor([[0, 0, 0, 0]])  # (B, T)
+    x = torch.IntTensor([[7, 7, 7, 7]])  # (B, T)
     _, T = x.shape
     V = 32
     C = 512
