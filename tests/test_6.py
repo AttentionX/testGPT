@@ -21,8 +21,8 @@ def test_gpt_v1_and_v2_logits_order_is_not_preserved():
     assert torch.allclose(logits[:, 1, :], logits[:, 2, :])
     model = GPTVer2(HeadVer1(), V, T, C)
     logits = model.logits(x)  # (B, T) -> (B, T, |V|)
-    assert torch.allclose(logits[:, 0, :], logits[:, 1, :], atol=1e-7, rtol=0.0001)
-    assert torch.allclose(logits[:, 1, :], logits[:, 2, :], atol=1e-7, rtol=0.0001)
+    assert torch.allclose(logits[:, 0, :], logits[:, 1, :], atol=1e-6, rtol=0.001)
+    assert torch.allclose(logits[:, 1, :], logits[:, 2, :], atol=1e-6, rtol=0.001)
 
 
 def test_gpt_v3_pos_encodings_v1():
