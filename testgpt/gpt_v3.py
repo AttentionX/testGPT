@@ -25,6 +25,9 @@ class GPTVer3(GPTVer2):
     def pos_encodings_v1(block_size: int, embed_size: int) -> torch.FloatTensor:
         """
         PE(pos) = pos
+        e.g.
+        I love you
+        0   1   2
         """
         # --- TODO 6 - 2 --- #
         encodings = torch.arange(block_size).unsqueeze(1).repeat(1, embed_size)  # (L) -> (L, 1) -> (L, C)
@@ -35,10 +38,14 @@ class GPTVer3(GPTVer2):
     def pos_encodings_v2(block_size: int, embed_size: int) -> torch.FloatTensor:
         """
         PE(pos) = pos / max(pos)
+        e.g.
+        I love you
+        -> 0/2  1/2  2/2
+        -> 0    0.5  1
         """
         # --- TODO 6 - 3 --- #
         encodings = GPTVer3.pos_encodings_v1(block_size, embed_size)  # (L, C)
-        encodings = encodings / block_size  # (L, C) -- normalize --> (L, C)
+        encodings = encodings / (block_size - 1)  # (L, C) -- normalize --> (L, C)
         return encodings
         # ------------------ #
 
@@ -50,7 +57,7 @@ class GPTVer3(GPTVer2):
         freq(i) = 1/10000**(i/d_model)
         """
         # --- TODO 6 - 4 --- #
-        # freq(i) = 1/10000**(i/d_model)
+        # --- freq(i) = 1/10000**(i/d_model) --- #
         freqs = 0.0001 ** (torch.arange(embed_size) / embed_size).unsqueeze(0)  # (C) -> (1, C)
         # ---  PE(pos, i) = sin(freq(i) * pos) --- #
         positions = torch.arange(block_size).unsqueeze(1)  # (L) -> (L, 1)
@@ -61,6 +68,7 @@ class GPTVer3(GPTVer2):
     @staticmethod
     def pos_encodings_v4(block_size: int, embed_size: int) -> torch.Tensor:
         """
+        (Vaswani et. al, 2017, Attention is all you need)
         PE(pos, 2i) = sin(freq(2i) * pos)
         PE(pos, 2i + 1) = cos(freq(2i) * pos)
         where:

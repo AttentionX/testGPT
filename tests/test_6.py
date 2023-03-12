@@ -11,6 +11,9 @@ from testgpt import HeadVer1, HeadVer4, GPTVer1, GPTVer2, GPTVer3
 
 
 def test_gpt_v1_and_v2_logits_order_is_not_preserved():
+    """
+    Ver1 & Ver2; You love that == That love you
+    """
     x = torch.IntTensor([[7, 7, 7, 7]])  # (B, T)
     _, T = x.shape
     V = 32
@@ -35,15 +38,19 @@ def test_gpt_v3_pos_encodings_v1():
     short_encodings = GPTVer3.pos_encodings_v1(50, C)
     long_encodings = GPTVer3.pos_encodings_v1(100, C)
     # --- property 1 --- #
+    # each position must be different
     assert not torch.allclose(encodings[0], encodings[1])
     assert not torch.allclose(encodings[1], encodings[2])
     # --- property 2 --- # (THIS DOES NOT HOLD)
+    # values must not be too big to prevent gradient explosion
     with pytest.raises(AssertionError):
         assert torch.all(torch.abs(encodings) <= 1)
     # --- property 3 --- #
+    # time delta must be the same within a sentence.
     assert torch.allclose(torch.norm(short_encodings[2] - short_encodings[0]),
                           torch.norm(long_encodings[2] - long_encodings[0]))
     # --- property 4 --- #
+    # time delta must be the same across sentences of variable lengths.
     assert torch.allclose(torch.norm(encodings[2] - encodings[0]), torch.norm(encodings[3] - encodings[1]))
 
 
@@ -52,20 +59,22 @@ def test_gpt_v3_pos_encodings_v2():
     PE(w_pos) - w_pos / length
     """
     T, C = 4, 512
-    # the first version of PE satisfies this property
     encodings = GPTVer3.pos_encodings_v2(T, C)
     short_encodings = GPTVer3.pos_encodings_v2(50, C)
     long_encodings = GPTVer3.pos_encodings_v2(100, C)
     # --- property 1 --- #
-    assert not torch.allclose(encodings[0], encodings[1])
+    # each position must be different
     assert not torch.allclose(encodings[1], encodings[2])
     # --- property 2 --- #
+    # values must not be too big to prevent gradient explosion
     assert torch.all(torch.abs(encodings) <= 1)
     # --- property 3 --- #
+    # time delta must be the same within a sentence.
     with pytest.raises(AssertionError):  # (THIS DOES NOT HOLD)
         assert torch.allclose(torch.norm(short_encodings[2] - short_encodings[0]),
                               torch.norm(long_encodings[2] - long_encodings[0]))
     # --- property 4 --- #
+    # time delta must be the same across sentences of variable lengths.
     assert torch.allclose(torch.norm(encodings[2] - encodings[0]), torch.norm(encodings[3] - encodings[1]))
 
 
@@ -74,19 +83,22 @@ def test_gpt_v3_pos_encodings_v3():
     PE(w_pos) = sin(w_pos / 10000^(i/C))
     """
     T, C = 4, 512
-    # the first version of PE satisfies this property
     encodings = GPTVer3.pos_encodings_v3(T, C)
     short_encodings = GPTVer3.pos_encodings_v3(50, C)
     long_encodings = GPTVer3.pos_encodings_v3(100, C)
     # --- property 1 --- #
+    # each position must be different
     assert not torch.allclose(encodings[0], encodings[1])
     assert not torch.allclose(encodings[1], encodings[2])
     # --- property 2 --- #
+    # values must not be too big to prevent gradient explosion
     assert torch.all(torch.abs(encodings) <= 1)
     # --- property 3 --- #
+    # time delta must be the same within a sentence.
     assert torch.allclose(torch.norm(short_encodings[2] - short_encodings[0]),
                           torch.norm(long_encodings[2] - long_encodings[0]))
     # --- property 4 --- # (THIS DOES NOT HOLD)
+    # time delta must be the same across sentences of variable lengths.
     with pytest.raises(AssertionError):
         assert torch.allclose(torch.norm(encodings[2] - encodings[0]), torch.norm(encodings[3] - encodings[1]))
 
@@ -99,25 +111,29 @@ def test_gpt_v3_pos_encodings_v4():
     should satisfy all properties
     """
     T, C = 4, 512
-    # the first version of PE satisfies this property
     encodings = GPTVer3.pos_encodings_v4(T, C)
     short_encodings = GPTVer3.pos_encodings_v4(50, C)
     long_encodings = GPTVer3.pos_encodings_v4(100, C)
     # --- property 1 --- #
+    # each position must be different
     assert not torch.allclose(encodings[0], encodings[1])
     assert not torch.allclose(encodings[1], encodings[2])
     # --- property 2 --- #
+    # values must not be too big to prevent gradient explosion
     assert torch.all(torch.abs(encodings) <= 1)
     # --- property 3 --- #
+    # time delta must be the same within a sentence.
     assert torch.allclose(torch.norm(short_encodings[2] - short_encodings[0]),
                           torch.norm(long_encodings[2] - long_encodings[0]))
     # --- property 4 --- #
+    # time delta must be the same across sentences of variable lengths.
     assert torch.allclose(torch.norm(encodings[2] - encodings[0]), torch.norm(encodings[3] - encodings[1]))
 
 
 def test_gpt_v3_logits_order_is_preserved():
     """
     As opposed to GPTVer1 & GPTVer2,  GPTVer3 preserves the order of the input tokens.
+    e.g. You love that != That love you
     """
     x = torch.IntTensor([[7, 7, 7, 7]])  # (B, T)
     _, T = x.shape
