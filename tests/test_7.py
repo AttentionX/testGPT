@@ -22,6 +22,24 @@ def test_head_ver_4_and_multi_head_ver_1_are_equally_expensive():
            == sum([p.numel() for p in head_v4.parameters() if p.requires_grad])
 
 
+def test_multi_head_helps():
+    """
+    But multi-head leads to faster convergence than single head.
+    """
+    seed_everything(1337)
+    V, T, C, n_heads = config['vocab_size'], config['block_size'], config['embed_size'], config['n_heads']
+    # --- HeadVer4: single-head --- #
+    contextualizer = HeadVer4(T, C, C)
+    gpt = GPTVer4(contextualizer, V, T, C)
+    losses_1 = train(gpt)
+    # --- MultiHeadVer4: multi-head --- #
+    contextualizer = MultiHeadVer1(T, C, n_heads)
+    gpt = GPTVer4(contextualizer, V, T, C)
+    losses_multi = train(gpt)
+    # gpt should perform better with multi-head
+    assert losses_1['val'] > losses_multi['val']
+
+
 def test_multi_head_ver_2_is_faster_than_ver_1():
     """
     MultiHeadVer2 is faster than MultiHeadVer1 because it does not involve explicit loops.
@@ -56,24 +74,5 @@ def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_identical():
     out_1 = multi_head_v1(x)
     out_2 = multi_head_v2(x)
     assert torch.allclose(out_1, out_2)
-
-
-def test_multi_head_helps():
-    """
-    But multi-head leads to faster convergence than single head.
-    """
-    seed_everything(1337)
-    V, T, C, n_heads = config['vocab_size'], config['block_size'], config['embed_size'], config['n_heads']
-    # --- HeadVer4: single-head --- #
-    contextualizer = HeadVer4(T, C, C)
-    gpt = GPTVer4(contextualizer, V, T, C)
-    losses_1 = train(gpt)
-    # --- MultiHeadVer4: multi-head --- #
-    contextualizer = MultiHeadVer1(T, C, n_heads)
-    gpt = GPTVer4(contextualizer, V, T, C)
-    losses_multi = train(gpt)
-    # gpt should perform better with multi-head
-    assert losses_1['val'] > losses_multi['val']
-
 
 
