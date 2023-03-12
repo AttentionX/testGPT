@@ -17,9 +17,9 @@ def test_gpt_v1_generates_text_given_a_context():
     assert expected == was
 ```
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=1330s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551321-0e83705d-3e08-439a-90c6-7eecf749f9f2.png"> | <img width="400" alt="image" src="">    | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
@@ -61,9 +61,9 @@ def test_gpt_v2_and_head_v1_generates_text_given_a_context():
 
 ```
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=2533s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551325-46e99bb7-5561-4486-a622-2f31d8f12e9e.png"> | <img width="400" alt="image" src="">     | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
@@ -95,9 +95,9 @@ def test_head_v2_faster_than_head_v1():
 
 ```
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=2831s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551328-15d656a2-c1df-41e4-adce-73f1a867842c.png"> | <img width="400" alt="image" src="">     | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
@@ -153,9 +153,9 @@ def test_head_v3_logits_are_properly_masked():
 
 ```
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=3282s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551333-6c0bc6c0-2be6-45c0-9084-aab74756fafa.png"> | <img width="400" alt="image" src="">     | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
@@ -228,9 +228,9 @@ def test_gpt_v2_and_head_v4_generates_text_given_a_context():
 
 ```
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=3720s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551337-92ff1331-1a8e-4df4-ae5a-2be0dc79bf11.png"> | <img width="400" alt="image" src="">     | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
@@ -313,9 +313,9 @@ def test_gpt_v3_and_head_v4_generates_text_given_a_context():
 
 ```
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=3618s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551315-108ee008-7c41-4893-abac-00be63a4411a.png"> | <img width="400" alt="image" src="">     | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
@@ -394,9 +394,9 @@ def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_identical():
 ```
 
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=4919s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551322-f1b845e7-c6e1-4022-bbd3-3673ae6413a9.png"> | <img width="400" alt="image" src="">     | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
@@ -439,9 +439,9 @@ def test_residual_conn_helps_when_network_is_deep():
 ```
 
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=5065s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551326-725c9581-1ce4-4de8-a434-5651710c049e.png"> | <img width="400" alt="image" src="">     | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
@@ -508,9 +508,9 @@ def test_layer_norm_helps_when_network_is_deep():
 
 ```
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=5571s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551329-5872391e-2729-467c-87e7-da9f0cef73a2.png"> | <img width="400" alt="image" src="">     | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
@@ -577,9 +577,9 @@ def test_dropout_helps():
 
 ```
 
-Karpathy | Us (Korean)  | Us (English) |
+[Karpathy](https://www.youtube.com/watch?v=kCc8FmEb1nY&t=5864s) | [Us (Korean)]()  | [Us (English)]() |
 --- |---------| --- |
-... | ...     | ... | 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/49430956/224551335-5ed1a6d0-cdbf-4d4a-a771-f1578085f233.png"> | <img width="400" alt="image" src="">     | <img width="400" alt="image" src=""> | 
 
 ### contributors:
 
