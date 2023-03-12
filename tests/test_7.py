@@ -10,24 +10,6 @@ from testgpt.gpt_v4 import GPTVer4
 from .conftest import config, train, seed_everything
 
 
-def test_multi_head_helps():
-    """
-    But multi-head leads to faster convergence than single head.
-    """
-    seed_everything(1337)
-    V, T, C, n_heads = config['vocab_size'], config['block_size'], config['embed_size'], config['n_heads']
-    # --- HeadVer4: single-head --- #
-    contextualizer = HeadVer4(T, C, C)
-    gpt = GPTVer4(contextualizer, V, T, C)
-    losses_1 = train(gpt)
-    # --- MultiHeadVer4: multi-head --- #
-    contextualizer = MultiHeadVer1(T, C, n_heads)
-    gpt = GPTVer4(contextualizer, V, T, C)
-    losses_multi = train(gpt)
-    # gpt should perform better with multi-head
-    assert losses_1['val'] > losses_multi['val']
-
-
 def test_head_ver_4_and_multi_head_ver_1_are_equally_expensive():
     """
     trainable parameters of multi-head ver 1 and head ver 4 must be the same because
@@ -75,6 +57,23 @@ def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_identical():
     out_2 = multi_head_v2(x)
     assert torch.allclose(out_1, out_2)
 
+
+def test_multi_head_helps():
+    """
+    But multi-head leads to faster convergence than single head.
+    """
+    seed_everything(1337)
+    V, T, C, n_heads = config['vocab_size'], config['block_size'], config['embed_size'], config['n_heads']
+    # --- HeadVer4: single-head --- #
+    contextualizer = HeadVer4(T, C, C)
+    gpt = GPTVer4(contextualizer, V, T, C)
+    losses_1 = train(gpt)
+    # --- MultiHeadVer4: multi-head --- #
+    contextualizer = MultiHeadVer1(T, C, n_heads)
+    gpt = GPTVer4(contextualizer, V, T, C)
+    losses_multi = train(gpt)
+    # gpt should perform better with multi-head
+    assert losses_1['val'] > losses_multi['val']
 
 
 
