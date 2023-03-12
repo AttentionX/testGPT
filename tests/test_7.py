@@ -30,6 +30,10 @@ def test_multi_head_helps():
 
 def test_head_ver_4_and_multi_head_ver_1_are_equally_expensive():
     """
+    (Vaswani et al. 2017, Attention is all you need)
+    "Due to the reduced dimension of each head,
+    the total computational cost is similar to that of single-head attention with full dimensionality."
+    dk = dv = dmodel/h, where h = number of heads.
     trainable parameters of multi-head ver 1 and head ver 4 must be the same because
     head_size = embed_size // n_heads
     """

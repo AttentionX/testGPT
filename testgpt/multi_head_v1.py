@@ -30,6 +30,9 @@ class MultiHeadVer1(torch.nn.Module):
         :return: (B, T, C)
         """
         # --- TODO 1-1 --- #
-        raise NotImplementedError
+        # (B, T, C/num_heads) * num_heads ---concat--> (B, T, C)
+        out = torch.cat([head(x) for head in self.heads], dim=-1)  # (B, T, C)
+        # aggregate the heads
+        out = self.proj(out)  # (B, T, C) -> (B, T, C)
         # ---------------- #
         return out
