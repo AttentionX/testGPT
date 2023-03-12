@@ -21,6 +21,11 @@ Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
+
+[Soun Ho Jung](https://github.com/aschung01) | [Adam Lee](https://github.com/Abecid)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/72554932?v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/41438776?v=4">
 
 # Test 2
 
@@ -60,6 +65,12 @@ Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
+
+[Yuna Park](https://github.com/gyuuuna) | [Jun Seon Kim](https://github.com/Junseon00)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/86581647?v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/26458224?v=4">
+
 # Test 3
 
 ```python
@@ -88,6 +99,11 @@ Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
+
+[Jun Seon Kim](https://github.com/Junseon00) | [Soun Ho Chung](https://github.com/aschung01)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/26458224?v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/72554932?v=4">
 
 # Test 4
 
@@ -141,7 +157,11 @@ Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
 
+[JunYoung Park](https://github.com/engineerA314) | [Yuri Kim](https://github.com/yuridekim)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/86403521?v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/63735383?v=4">
 
 # Test 5
 
@@ -212,6 +232,11 @@ Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
+
+[Ju Hwan Cho](https://github.com/juhwancho) | [Adam Lee](https://github.com/Abecid)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/49906112?v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/41438776?v=4">
 
 # Test 6
 
@@ -292,6 +317,11 @@ Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
+
+[Ha Hyeon Choi](https://github.com/hahyeon610) | [Eu-Bin KIM](https://github.com/eubinecto)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/49430956?s=400&v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/56193069?v=4">
 
 # Test 7
 
@@ -361,11 +391,6 @@ def test_multi_head_ver_1_and_multi_head_ver_2_are_logically_identical():
     out_2 = multi_head_v2(x)
     assert torch.allclose(out_1, out_2)
 
-
-
-
-
-
 ```
 
 
@@ -373,7 +398,11 @@ Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
 
+[Ha Hyeon Choi](https://github.com/hahyeon610) | [Eu-Bin KIM](https://github.com/eubinecto)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/49430956?s=400&v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/56193069?v=4">
 
 # Test 8
 
@@ -414,7 +443,11 @@ Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
 
+[Yuri Kim](https://github.com/yuridekim) | [Ju Hwan Cho](https://github.com/juhwancho)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/63735383?v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/49906112?v=4">
 
 # Test 9
 
@@ -475,14 +508,15 @@ def test_layer_norm_helps_when_network_is_deep():
 
 ```
 
-
-
 Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
 
-
+[Ha Hyeon Choi](https://github.com/hahyeon610) | [Eu-Bin KIM](https://github.com/eubinecto)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/49430956?s=400&v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/56193069?v=4">
 
 # Test 10
 
@@ -547,12 +581,8 @@ Karpathy | Us (Korean)  | Us (English) |
 --- |---------| --- |
 ... | ...     | ... | 
 
+### contributors:
 
-
-
-
-# Contributors
-
-Eu-Bin KIM |  ... | ... |  
---- | --- | --- |
-... | ... | ... |
+[Ha Hyeon Choi](https://github.com/hahyeon610) | [Eu-Bin KIM](https://github.com/eubinecto)
+--- | --- 
+<img width="100" alt="image" src="https://avatars.githubusercontent.com/u/49430956?s=400&v=4"> | <img width="100" alt="image" src="https://avatars.githubusercontent.com/u/56193069?v=4">
