@@ -1,4 +1,5 @@
 """
+Implement LayerNorm & BlockVer3.
 running question: why do we need LayerNorm?
 """
 import torch
@@ -30,6 +31,23 @@ def test_layer_norm_helps_when_network_is_deep():
     assert losses_1['val'] > losses_2['val']
 
 
+def test_layer_norm_properly_normalizes_the_feature_dimension():
+    """
+    Layer norm mitigates vanishing gradient by normalizing the features dimension.
+    i.e. standardizing it such that mean = 0 & var = 1 by scaling & shifting the distribution.
+    Note: the term "normalizing" is a bit misleading here, because the resulting distribution
+    is not a normal distribution. (https://www.youtube.com/watch?v=sxEqtjLC0aM&t=142s)
+    """
+    B, T, C = 32, 64, 512
+    ln = LayerNorm(C)
+    x = torch.rand(T, C)
+    out = ln(x)
+    mean_across_features = torch.round(out.mean(dim=-1))
+    var_across_features = torch.round(out.var(dim=-1))
+    assert torch.allclose(mean_across_features, torch.zeros(mean_across_features.shape))
+    assert torch.allclose(var_across_features, torch.ones(var_across_features.shape))
+
+
 def test_layer_norm_mitigates_vanishing_gradient():
     """
     a simple experiment to see if layer norm mitigates vanishing gradient.
@@ -56,16 +74,3 @@ def test_layer_norm_mitigates_vanishing_gradient():
     # gradients should not be near-zero
     assert not torch.allclose(torch.round(with_norm), torch.zeros(with_norm.shape))
 
-
-def test_layer_norm_properly_normalizes_the_feature_dimension():
-    """
-    Layenorm mitigates vanishing gradient by normalizing the features dimension.
-    """
-    B, T, C = 32, 64, 512
-    ln = LayerNorm(C)
-    x = torch.randn(T, C)
-    out = ln(x)
-    mean_across_features = torch.round(out.mean(dim=-1))
-    var_across_features = torch.round(out.var(dim=-1))
-    assert torch.allclose(mean_across_features, torch.zeros(mean_across_features.shape))
-    assert torch.allclose(var_across_features, torch.ones(var_across_features.shape))
